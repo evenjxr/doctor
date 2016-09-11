@@ -51,32 +51,49 @@ class Follow extends Controller
     public function index(Request $request)
     {
         $user = $this->getUser($request);
-        $myfollow = FollowM::where('by_user_id',$user->id)->simplePaginate(6)->toArray();
-        $a = FollowM::groupBy('user_id')->having(count('user_id') , '>',2)->get();
-        dd($a);
-        
+        $page = Input::get('page') ? : 1;
+        $start = ($page-1) * 6;
+        $myFollow = FollowM::where('by_user_id',$user->id)->simplePaginate(6,['user_id','type'])->toArray();
+        $hotFollows = DB::select(
+            'select count(`user_id`) as count ,`user_id`,`type` from `follows` 
+              where `follows`.`deleted_at` is null 
+              group by `user_id`,`type` 
+              order by count  
+              desc limit '.$start.',6');
 
-//        $user = new UserM();
-//        $hospital = new HospitalM();
-//        foreach ($follows['data'] as $key => $value) {
-//            if ($value['type'] == 'person') {
-//                $follows['data'][$key]['type_name'] = '个人';
-//                $follows['data'][$key]['user_name'] = $user->find($value['user_id'])['name'];
-//            } else if ($value['type'] == 'hospital') {
-//                $follows['data'][$key]['type_name'] = '医院';
-//                $follows['data'][$key]['user_name'] = $hospital->find($value['user_id'])['name'];
-//            }
-//        }
-//        return response()->json(['success' => 'Y', 'msg' => '', 'data' => $follows['data']]);
+        $user = new UserM();
+        $hospital = new HospitalM();
+        foreach ($myFollow['data'] as $key => $value) {
+            if ($value['type'] == 'person') {
+                $myFollow['data'][$key]['type_name'] = '个人';
+                $myFollow['data'][$key]['user_name'] = $user->find($value['user_id'])['name'];
+            } else if ($value['type'] == 'hospital') {
+                $myFollow['data'][$key]['type_name'] = '医院';
+                $myFollow['data'][$key]['user_name'] = $hospital->find($value['user_id'])['name'];
+            }
+        }
+
+        $hotFollow = [];
+        foreach ($hotFollows as $key => $value) {
+            if ($value->type == 'person') {
+                $one = $user->find($value->user_id);
+                $hotFollow[$key]['type'] = $value->type;
+                $hotFollow[$key]['user_id'] = $value->user_id;
+                $hotFollow[$key]['type_name'] = '个人';
+                $hotFollow[$key]['user_name'] = $one->name;
+                $hotFollow[$key]['headimgurl'] = $one->headimgurl;
+            } else if ($value->type == 'hospital') {
+                $one  = $hospital->find($value->user_id);
+                $hotFollow[$key]['type'] = $value->type;
+                $hotFollow[$key]['user_id'] = $value->user_id;
+                $hotFollow[$key]['type_name'] = '医院';
+                $hotFollow[$key]['headimgurl'] = $one->headimgurl;
+                $hotFollow[$key]['user_name'] = $one->name;
+            }
+        }
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['myfollow'=>$myFollow['data'],'hotfollow'=>$hotFollow]]);
     }
-
-
-
-
-
-
-
-
+    
     public function cancel(Request $request)
     {
         $this->validateAdd($request);

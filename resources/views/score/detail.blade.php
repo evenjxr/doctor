@@ -1,15 +1,8 @@
 ﻿@extends('default')
 @section('body')
 <article class="page-container">
-	<form class="form form-horizontal" id="form-city-add" method="post" action="{{ URL::route('order.update') }}">
-	<input name="id" value="{{$order->id}}" type="hidden">
-	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>from：</label>
-		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{{$order->from_type}}" placeholder="" name="name">
-			<input type="text" class="input-text" value="{{$order->from_user}}" placeholder="" name="name">
-		</div>
-	</div>
+	<form class="form form-horizontal" id="form-city-add" method="post" action="{{ URL::route('tag.update') }}">
+	<input name="id" value="{{$tag->id}}" type="hidden">
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3">标签类型：</label>
 		<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">

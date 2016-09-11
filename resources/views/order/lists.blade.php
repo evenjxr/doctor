@@ -23,31 +23,49 @@
 			<table class="table table-border table-bordered table-bg table-sort">
 				<thead>
 				<tr class="text-c">
-					<th width="25"><input type="checkbox" name="" value=""></th>
 					<th width="70">ID</th>
 					<th width="80">from</th>
 					<th width="80">to</th>
-					<th width="80">类型</th>
 					<th width="200">描述</th>
-					<th width="200">状态</th>
-					<th>缩略图</th>
+					<th width="100">音频</th>
+					<th width="80">状态</th>
 					<th width="120">时间</th>
 					<th width="100">操作</th>
 				</tr>
 				</thead>
 				<tbody>
+				@foreach($orders as $key=>$value)
 				<tr class="text-c">
-					<td><input name="" type="checkbox" value=""></td>
-					<td>1</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="f-14 product-brand-manage"><a style="text-decoration:none" onClick="product_brand_edit('品牌编辑','codeing.html','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="active_del(this,'10001')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+					<td>{{$key}}</td>
+					<td>{{$value->from_type_name}}-{{$value->from_name}}</td>
+					<td>{{$value->to_type_name}}-{{$value->to_name}}</td>
+					<td>{{$value->description}}</td>
+					<td><audio controls="controls"><source src="{{$value->video_url}}" /></audio></td>
+					<td class="td-status">
+						@if($value->status == 1)
+							<span class="label label-success radius">等待中</span>
+						@elseif($value->status == 2)
+							<span class="label label-default radius">已接受</span>
+						@elseif($value->status == 3)
+							<span class="label label-waring radius">已拒绝</span>
+						@else
+							<span class="label label-info radius">已转介绍</span>
+						@endif
+					</td>
+					<td>{{$value->created_at}}</td>
+					<td class="f-14 td-manage">
+						@if($value->status == 1)
+							<a class="shift" style="text-decoration:none" onClick="accept_order(this,{{$value->id}},2)" href="javascript:;" title="接受"><i class="Hui-iconfont">&#xe615;</i></a>
+							<a class="shift" onClick="refuse_order(this,{{$value->id}},3)" href="javascript:;" title="拒绝" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>
+						@elseif($value->status == 3)
+							<a onClick="transfer_order('转单','{{URL::Route('order.transfer',['id'=>$value->id])}}',1)" href="javascript:;" title="转介绍" style="text-decoration:none"><i class="Hui-iconfont">&#xe603;</i></a>
+						@endif
+						<a style="text-decoration:none" onClick="order_pic('图库编辑','{{URL::Route('order.pic',['id'=>$value->id])}}')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe613;</i></a>
+						<a style="text-decoration:none" onClick="order_edit('品牌编辑','{{URL::Route('order.detail',['id'=>$value->id])}}')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+						<a style="text-decoration:none"  href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+					</td>
 				</tr>
+				@endforeach
 				</tbody>
 			</table>
 		</div>
@@ -63,9 +81,8 @@
 	function order_edit(title,url){
 		layer_show(title,url,600,400);
 	}
-
 	/*管理员-权限-删除*/
-	function tag_del(obj,id){
+	function order_del(obj,id){
 		layer.confirm('你确认要删除标签吗？',function(index){
 			doDelete(id)
 			$(obj).parents("tr").remove();
@@ -73,10 +90,61 @@
 		});
 	}
 
+	/*用户-接受*/
+	function accept_order(obj,id){
+		layer.confirm('确认要接受吗？',function(index){
+			$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已接受</span>');
+			$(obj).parents("tr").find(".shift").remove();
+			shiftStatus(id,2);
+			layer.msg('已接受!',{icon: 6,time:1000});
+		});
+	}
+
+	/*用户-拒绝*/
+	function refuse_order(obj,id){
+		layer.confirm('确认要拒绝吗？',function(index){
+			$(obj).parents("tr").find(".td-manage").prepend('<a onClick="transfer_order(this,{{$value->id}},4)" href="javascript:;" title="转介绍" style="text-decoration:none"><i class="Hui-iconfont">&#xe603;</i></a>');
+			$(obj).parents("tr").find(".td-status").html('<span class="label label-waring radius">已拒绝</span>');
+			$(obj).parents("tr").find(".shift").remove();
+			shiftStatus(id,3);
+			layer.msg('已接受!',{icon: 5,time:1000});
+		});
+	}
+
+	/*用户-启用*/
+	function transfer_order(title,url){
+		layer_show(title,url);
+	}
+
+	function shiftStatus(id,status){
+		$.ajax({
+			type: "GET",
+			url: "{{ URL::route('order.auth') }}",
+			data: {
+				id: id,
+				status: status
+			},
+			dataType: "json",
+			success: function(data){
+			}
+		});
+		return true;
+	}
+
+	/*图片-编辑*/
+	function order_pic(title,url,id){
+		var index = layer.open({
+			type: 2,
+			title: title,
+			content: url
+		});
+		layer.full(index);
+	}
+
 	function doDelete(ids){
 		$.ajax({
 			type: "POST",
-			url: "{{ URL::route('tag.delete') }}",
+			url: "{{ URL::route('order.delete') }}",
 			data: {
 				ids: ids
 			},

@@ -77,9 +77,13 @@ Route::group(['prefix' => 'order'], function () {
 
     Route::get('detail',['uses' => 'Order@detail', 'as' => 'order.detail']);
 
+    Route::get('transfer',['uses' => 'Order@transfer', 'as' => 'order.transfer']);
+
     Route::post('delete',['uses' => 'Order@delete', 'as' => 'order.delete']);
 
     Route::get('auth',['uses' => 'Order@auth', 'as' => 'order.auth']);
+
+    Route::get('pic',['uses' => 'Order@pic', 'as' => 'order.pic']);
 
 });
 
@@ -129,6 +133,38 @@ Route::group(['prefix' => 'tag'], function () {
     Route::get('detail',['uses' => 'Tag@detail', 'as' => 'tag.detail']);
 
     Route::post('delete',['uses' => 'Tag@delete', 'as' => 'tag.delete']);
+
+});
+
+Route::group(['prefix' => 'score'], function () {
+
+    Route::get('lists',['uses' => 'Score@lists', 'as' => 'score.lists']);
+
+    Route::get('add',['uses' => 'Score@add', 'as' => 'score.add']);
+
+    Route::post('store',['uses' => 'Score@store', 'as' => 'score.store']);
+
+    Route::post('update',['uses' => 'Score@update', 'as' => 'score.update']);
+
+    Route::get('detail',['uses' => 'Score@detail', 'as' => 'score.detail']);
+
+    Route::post('delete',['uses' => 'Score@delete', 'as' => 'score.delete']);
+
+});
+
+Route::group(['prefix' => 'flower'], function () {
+
+    Route::get('lists',['uses' => 'Flower@lists', 'as' => 'flower.lists']);
+
+    Route::get('add',['uses' => 'Flower@add', 'as' => 'flower.add']);
+
+    Route::post('store',['uses' => 'Flower@store', 'as' => 'flower.store']);
+
+    Route::post('update',['uses' => 'Flower@update', 'as' => 'flower.update']);
+
+    Route::get('detail',['uses' => 'Flower@detail', 'as' => 'flower.detail']);
+
+    Route::post('delete',['uses' => 'Flower@delete', 'as' => 'flower.delete']);
 
 });
 

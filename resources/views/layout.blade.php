@@ -71,22 +71,6 @@
     <aside class="Hui-aside">
         <input runat="server" id="divScrollValue" type="hidden" value="" />
         <div class="menu_dropdown bk_2">
-            <dl id="menu-article">
-                <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-                <dd>
-                    <ul>
-                        <li><a _href="article-list.html" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
-                    </ul>
-                </dd>
-            </dl>
-            <dl id="menu-picture">
-                <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-                <dd>
-                    <ul>
-                        <li><a _href="picture-list.html" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
-                    </ul>
-                </dd>
-            </dl>
             <dl id="menu-product">
                 <dt><i class="Hui-iconfont">&#xe643;</i> 医院管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
@@ -95,12 +79,20 @@
                     </ul>
                 </dd>
             </dl>
+            <dl id="menu-article">
+                <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a _href="article-list.html" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
+                    </ul>
+                </dd>
+            </dl>
             <dl id="menu-comments">
                 <dt><i class="Hui-iconfont">&#xe672;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
                         <li><a _href="http://h-ui.duoshuo.com/admin/" data-title="评论列表" href="javascript:;">评论列表</a></li>
-                        <li><a _href="feedback-list.html" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
+                        <li><a _href="{{ URL::route('order.lists') }}" data-title="订单列表" href="javascript:void(0)">订单列表</a></li>
                     </ul>
                 </dd>
             </dl>
@@ -110,8 +102,8 @@
                     <ul>
                         <li><a _href="{{ URL::route('user.lists') }}" data-title="会员列表" href="javascript:;">会员列表</a></li>
                         <li><a _href="{{ URL::route('tag.lists') }}" data-title="标签管理" href="javascript:;">标签管理</a></li>
-                        <li><a _href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
-                        <li><a _href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
+                        <li><a _href="{{ URL::route('score.lists') }}" data-title="积分管理" href="javascript:;">积分管理</a></li>
+                        <li><a _href="{{ URL::route('flower.lists') }}" data-title="买花记录" href="javascript:;">买花记录</a></li>
                         <li><a _href="member-record-download.html" data-title="下载记录" href="javascript:void(0)">下载记录</a></li>
                         <li><a _href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>
                     </ul>
