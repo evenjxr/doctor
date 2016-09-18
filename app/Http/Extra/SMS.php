@@ -26,7 +26,6 @@ class SMS
     
     public static function projectInfo($app)
     {
-        
         return Config::get('sms.api.' . $app, false);
     }
 
