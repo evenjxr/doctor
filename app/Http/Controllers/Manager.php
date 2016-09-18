@@ -4,10 +4,48 @@ namespace App\Http\Controllers;
 
 use Input;
 use App\Http\Models\Manager as ManagerM;
+use App\Http\Models\Hospital as HospitalM;
+use App\Http\Models\Order as OrderM;
+use App\Http\Models\User as UserM;
 use App\Http\Models\Role as RoleM;
 
 class Manager extends Controller
 {
+
+    public function index()
+    {
+        $unhandleToPerson = OrderM::where('to_type','person')->where('status','1')->count();
+        $unhandleToPlatform = OrderM::where('to_type','platform')->where('status','1')->count();;
+        $unhandleToHospital =  OrderM::where('to_type','hospital')->where('status','1')->count();;
+        $withdraw = 33;
+        $BeginDate=date('Y-m-01', strtotime(date("Y-m-d")));
+
+        $totalUsers = UserM::count();
+        $todayUsers = UserM::where('created_at',date('y-m-d h:i:s',time()))->count();
+        $weekUsers = UserM::where('created_at','>=',date('Y-m-d', strtotime('this week')))->count();
+        $monthUsers = UserM::where('created_at','>=',$BeginDate)
+                        ->where('created_at','<=', date('Y-m-d', strtotime("$BeginDate +1 month -1 day")))->count();
+
+        $totalOrders = OrderM::count();
+        $todayOrders = OrderM::where('created_at',date('y-m-d h:i:s',time()))->count();
+        $weekOrders = OrderM::where('created_at','>=',date('Y-m-d', strtotime('this week')))->count();
+        $monthOrders = OrderM::where('created_at','>=',$BeginDate)
+            ->where('created_at','<=', date('Y-m-d', strtotime("$BeginDate +1 month -1 day")))->count();
+        return view('manager.desktop',[
+            'totalUsers' => $totalUsers,
+            'todayUsers'=>$todayUsers,
+            'weekUsers'=>$weekUsers,
+            'monthUsers' => $monthUsers,
+            'totalOrders'=>$totalOrders,
+            'todayOrders'=>$todayOrders,
+            'weekOrders'=>$weekOrders,
+            'monthOrders' => $monthOrders,
+            'unhandleToPerson'=>$unhandleToPerson,
+            'unhandleToPlatform'=>$unhandleToPlatform,
+            'unhandleToHospital'=>$unhandleToHospital,
+            'withdraw' =>$withdraw]);
+    }
+
     public function lists()
     {
         $params = Input::all();
@@ -22,7 +60,7 @@ class Manager extends Controller
         return view('manager.lists',['lists'=>$lists]);
     }
 
-    
+
     public function add()
     {
         $roleArr = RoleM::pluck('name','id')->toArray();
@@ -81,5 +119,5 @@ class Manager extends Controller
         if ($flag) return 'ture';
         return "false";
     }
-    
+
 }

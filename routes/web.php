@@ -11,175 +11,180 @@
 |
 */
 
-Route::get('/', function () {
-    return view('desktop');
-});
-
-
 Route::get('login/index',['uses' => 'Login@index', 'as' => 'login.index']);
 
 Route::post('login',['uses' => 'Login@login', 'as' => 'login']);
 
 Route::get('loginout',['uses' => 'Login@loginOut', 'as' => 'loginout']);
 
-Route::group(['prefix' => 'common'], function () {
+Route::group(['middleware' => 'manager.login'], function () {
 
-    Route::post('upload',['uses' => 'Common@upload', 'as' => 'common.upload']);
+    Route::get('/', function () {
+        return view('desktop');
+    });
 
-});
+    Route::group(['prefix' => 'common'], function () {
 
-Route::group(['prefix' => 'user'], function () {
+        Route::post('upload',['uses' => 'Common@upload', 'as' => 'common.upload']);
 
-    Route::get('lists',['uses' => 'User@lists', 'as' => 'user.lists']);
+    });
 
-    Route::get('add',['uses' => 'User@add', 'as' => 'user.add']);
+    Route::group(['prefix' => 'user'], function () {
 
-    Route::post('store',['uses' => 'User@store', 'as' => 'user.store']);
+        Route::get('lists', ['uses' => 'User@lists', 'as' => 'user.lists']);
 
-    Route::post('update',['uses' => 'User@update', 'as' => 'user.update']);
+        Route::get('add', ['uses' => 'User@add', 'as' => 'user.add']);
 
-    Route::get('detail',['uses' => 'User@detail', 'as' => 'user.detail']);
+        Route::post('store', ['uses' => 'User@store', 'as' => 'user.store']);
 
-    Route::post('delete',['uses' => 'User@delete', 'as' => 'user.delete']);
+        Route::post('update', ['uses' => 'User@update', 'as' => 'user.update']);
 
-    Route::get('auth',['uses' => 'User@auth', 'as' => 'user.auth']);
+        Route::get('detail', ['uses' => 'User@detail', 'as' => 'user.detail']);
 
-});
+        Route::post('delete', ['uses' => 'User@delete', 'as' => 'user.delete']);
 
-Route::group(['prefix' => 'hospital'], function () {
+        Route::get('auth', ['uses' => 'User@auth', 'as' => 'user.auth']);
 
-    Route::get('lists',['uses' => 'Hospital@lists', 'as' => 'hospital.lists']);
+    });
 
-    Route::get('add',['uses' => 'Hospital@add', 'as' => 'hospital.add']);
+    Route::group(['prefix' => 'hospital'], function () {
 
-    Route::post('store',['uses' => 'Hospital@store', 'as' => 'hospital.store']);
+        Route::get('lists', ['uses' => 'Hospital@lists', 'as' => 'hospital.lists']);
 
-    Route::post('update',['uses' => 'Hospital@update', 'as' => 'hospital.update']);
+        Route::get('add', ['uses' => 'Hospital@add', 'as' => 'hospital.add']);
 
-    Route::get('detail',['uses' => 'Hospital@detail', 'as' => 'hospital.detail']);
+        Route::post('store', ['uses' => 'Hospital@store', 'as' => 'hospital.store']);
 
-    Route::post('delete',['uses' => 'Hospital@delete', 'as' => 'hospital.delete']);
+        Route::post('update', ['uses' => 'Hospital@update', 'as' => 'hospital.update']);
 
-    Route::get('auth',['uses' => 'Hospital@auth', 'as' => 'hospital.auth']);
+        Route::get('detail', ['uses' => 'Hospital@detail', 'as' => 'hospital.detail']);
 
-});
+        Route::post('delete', ['uses' => 'Hospital@delete', 'as' => 'hospital.delete']);
 
+        Route::get('auth', ['uses' => 'Hospital@auth', 'as' => 'hospital.auth']);
 
-Route::group(['prefix' => 'order'], function () {
+    });
 
-    Route::get('lists',['uses' => 'Order@lists', 'as' => 'order.lists']);
 
-    Route::get('add',['uses' => 'Order@add', 'as' => 'order.add']);
+    Route::group(['prefix' => 'order'], function () {
 
-    Route::post('store',['uses' => 'Order@store', 'as' => 'order.store']);
+        Route::get('lists', ['uses' => 'Order@lists', 'as' => 'order.lists']);
 
-    Route::post('update',['uses' => 'Order@update', 'as' => 'order.update']);
+        Route::get('add', ['uses' => 'Order@add', 'as' => 'order.add']);
 
-    Route::get('detail',['uses' => 'Order@detail', 'as' => 'order.detail']);
+        Route::post('store', ['uses' => 'Order@store', 'as' => 'order.store']);
 
-    Route::get('transfer',['uses' => 'Order@transfer', 'as' => 'order.transfer']);
+        Route::post('update', ['uses' => 'Order@update', 'as' => 'order.update']);
 
-    Route::post('delete',['uses' => 'Order@delete', 'as' => 'order.delete']);
+        Route::get('detail', ['uses' => 'Order@detail', 'as' => 'order.detail']);
 
-    Route::get('auth',['uses' => 'Order@auth', 'as' => 'order.auth']);
+        Route::get('transfer', ['uses' => 'Order@transfer', 'as' => 'order.transfer']);
 
-    Route::get('pic',['uses' => 'Order@pic', 'as' => 'order.pic']);
+        Route::post('delete', ['uses' => 'Order@delete', 'as' => 'order.delete']);
 
-});
+        Route::get('auth', ['uses' => 'Order@auth', 'as' => 'order.auth']);
 
-Route::group(['prefix' => 'manager'], function () {
-    
-    Route::get('lists',['uses' => 'Manager@lists', 'as' => 'manager.lists']);
+        Route::get('pic', ['uses' => 'Order@pic', 'as' => 'order.pic']);
 
-    Route::get('add',['uses' => 'Manager@add', 'as' => 'manager.add']);
+    });
 
-    Route::post('store',['uses' => 'Manager@store', 'as' => 'manager.store']);
+    Route::group(['prefix' => 'manager'], function () {
 
-    Route::post('update',['uses' => 'Manager@update', 'as' => 'manager.update']);
+        Route::get('index', ['uses' => 'Manager@index', 'as' => 'manager.index']);
 
-    Route::get('detail',['uses' => 'Manager@detail', 'as' => 'manager.detail']);
+        Route::get('lists', ['uses' => 'Manager@lists', 'as' => 'manager.lists']);
 
-    Route::get('delete',['uses' => 'Manager@delete', 'as' => 'manager.delete']);
+        Route::get('add', ['uses' => 'Manager@add', 'as' => 'manager.add']);
 
-    Route::get('auth',['uses' => 'Manager@auth', 'as' => 'manager.auth']);
+        Route::post('store', ['uses' => 'Manager@store', 'as' => 'manager.store']);
 
-});
+        Route::post('update', ['uses' => 'Manager@update', 'as' => 'manager.update']);
 
-Route::group(['prefix' => 'role'], function () {
+        Route::get('detail', ['uses' => 'Manager@detail', 'as' => 'manager.detail']);
 
-    Route::get('lists',['uses' => 'Role@lists', 'as' => 'role.lists']);
+        Route::get('delete', ['uses' => 'Manager@delete', 'as' => 'manager.delete']);
 
-    Route::get('add',['uses' => 'Role@add', 'as' => 'role.add']);
+        Route::get('auth', ['uses' => 'Manager@auth', 'as' => 'manager.auth']);
 
-    Route::post('store',['uses' => 'Role@store', 'as' => 'role.store']);
+    });
 
-    Route::post('update',['uses' => 'Role@update', 'as' => 'role.update']);
+    Route::group(['prefix' => 'role'], function () {
 
-    Route::get('detail',['uses' => 'Role@detail', 'as' => 'role.detail']);
+        Route::get('lists', ['uses' => 'Role@lists', 'as' => 'role.lists']);
 
-    Route::post('delete',['uses' => 'Role@delete', 'as' => 'role.delete']);
-});
+        Route::get('add', ['uses' => 'Role@add', 'as' => 'role.add']);
 
-Route::group(['prefix' => 'tag'], function () {
+        Route::post('store', ['uses' => 'Role@store', 'as' => 'role.store']);
 
-    Route::get('lists',['uses' => 'Tag@lists', 'as' => 'tag.lists']);
+        Route::post('update', ['uses' => 'Role@update', 'as' => 'role.update']);
 
-    Route::get('add',['uses' => 'Tag@add', 'as' => 'tag.add']);
+        Route::get('detail', ['uses' => 'Role@detail', 'as' => 'role.detail']);
 
-    Route::post('store',['uses' => 'Tag@store', 'as' => 'tag.store']);
+        Route::post('delete', ['uses' => 'Role@delete', 'as' => 'role.delete']);
+    });
 
-    Route::post('update',['uses' => 'Tag@update', 'as' => 'tag.update']);
+    Route::group(['prefix' => 'tag'], function () {
 
-    Route::get('detail',['uses' => 'Tag@detail', 'as' => 'tag.detail']);
+        Route::get('lists', ['uses' => 'Tag@lists', 'as' => 'tag.lists']);
 
-    Route::post('delete',['uses' => 'Tag@delete', 'as' => 'tag.delete']);
+        Route::get('add', ['uses' => 'Tag@add', 'as' => 'tag.add']);
 
-});
+        Route::post('store', ['uses' => 'Tag@store', 'as' => 'tag.store']);
 
-Route::group(['prefix' => 'score'], function () {
+        Route::post('update', ['uses' => 'Tag@update', 'as' => 'tag.update']);
 
-    Route::get('lists',['uses' => 'Score@lists', 'as' => 'score.lists']);
+        Route::get('detail', ['uses' => 'Tag@detail', 'as' => 'tag.detail']);
 
-    Route::get('add',['uses' => 'Score@add', 'as' => 'score.add']);
+        Route::post('delete', ['uses' => 'Tag@delete', 'as' => 'tag.delete']);
 
-    Route::post('store',['uses' => 'Score@store', 'as' => 'score.store']);
+    });
 
-    Route::post('update',['uses' => 'Score@update', 'as' => 'score.update']);
+    Route::group(['prefix' => 'score'], function () {
 
-    Route::get('detail',['uses' => 'Score@detail', 'as' => 'score.detail']);
+        Route::get('lists', ['uses' => 'Score@lists', 'as' => 'score.lists']);
 
-    Route::post('delete',['uses' => 'Score@delete', 'as' => 'score.delete']);
+        Route::get('add', ['uses' => 'Score@add', 'as' => 'score.add']);
 
-});
+        Route::post('store', ['uses' => 'Score@store', 'as' => 'score.store']);
 
-Route::group(['prefix' => 'flower'], function () {
+        Route::post('update', ['uses' => 'Score@update', 'as' => 'score.update']);
 
-    Route::get('lists',['uses' => 'Flower@lists', 'as' => 'flower.lists']);
+        Route::get('detail', ['uses' => 'Score@detail', 'as' => 'score.detail']);
 
-    Route::get('add',['uses' => 'Flower@add', 'as' => 'flower.add']);
+        Route::post('delete', ['uses' => 'Score@delete', 'as' => 'score.delete']);
 
-    Route::post('store',['uses' => 'Flower@store', 'as' => 'flower.store']);
+    });
 
-    Route::post('update',['uses' => 'Flower@update', 'as' => 'flower.update']);
+    Route::group(['prefix' => 'flower'], function () {
 
-    Route::get('detail',['uses' => 'Flower@detail', 'as' => 'flower.detail']);
+        Route::get('lists', ['uses' => 'Flower@lists', 'as' => 'flower.lists']);
 
-    Route::post('delete',['uses' => 'Flower@delete', 'as' => 'flower.delete']);
+        Route::get('add', ['uses' => 'Flower@add', 'as' => 'flower.add']);
 
-});
+        Route::post('store', ['uses' => 'Flower@store', 'as' => 'flower.store']);
 
-Route::group(['prefix' => 'auth'], function () {
+        Route::post('update', ['uses' => 'Flower@update', 'as' => 'flower.update']);
 
-    Route::get('lists',['uses' => 'Auth@lists', 'as' => 'auth.lists']);
+        Route::get('detail', ['uses' => 'Flower@detail', 'as' => 'flower.detail']);
 
-    Route::get('add',['uses' => 'Auth@add', 'as' => 'auth.add']);
+        Route::post('delete', ['uses' => 'Flower@delete', 'as' => 'flower.delete']);
 
-    Route::post('store',['uses' => 'Auth@store', 'as' => 'auth.store']);
+    });
 
-    Route::post('update',['uses' => 'Auth@update', 'as' => 'auth.update']);
+    Route::group(['prefix' => 'auth'], function () {
 
-    Route::get('detail',['uses' => 'Auth@detail', 'as' => 'auth.detail']);
+        Route::get('lists', ['uses' => 'Auth@lists', 'as' => 'auth.lists']);
 
-    Route::post('delete',['uses' => 'Auth@delete', 'as' => 'auth.delete']);
+        Route::get('add', ['uses' => 'Auth@add', 'as' => 'auth.add']);
+
+        Route::post('store', ['uses' => 'Auth@store', 'as' => 'auth.store']);
+
+        Route::post('update', ['uses' => 'Auth@update', 'as' => 'auth.update']);
+
+        Route::get('detail', ['uses' => 'Auth@detail', 'as' => 'auth.detail']);
+
+        Route::post('delete', ['uses' => 'Auth@delete', 'as' => 'auth.delete']);
+
+    });
 
 });

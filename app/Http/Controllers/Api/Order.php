@@ -39,7 +39,7 @@ class Order extends Controller
                 $user = UserM::find($value['from_id']);
                 $orders['data'][$key]['from_name'] = $user->name;
                 $tag = TagM::whereIn('id',unserialize($user->tag_hospital))->pluck('name');
-                $orders['data'][$key]['tag_hospital'] = $tag;
+                $orders['data'][$key]['hospital'] = $tag[0];
                 $orders['data'][$key]['from_type_name'] = '个人';
             } else {
                 $manager = ManagerM::find($value['from_id']);
@@ -47,7 +47,10 @@ class Order extends Controller
                 $orders['data'][$key]['from_type_name'] = '官方平台';
             }
             $orders['data'][$key]['file'] = FileM::where('order_id',$value['id'])->orderby('created_at','desc')->get(['id','path','name']);
+            $date = strtotime($value['created_at']);
+            $orders['data'][$key]['order_time'] = date('m',$date).'月'.date('d',$date).'日';
         }
+
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $orders['data']]);
     }
 
@@ -65,7 +68,7 @@ class Order extends Controller
                 $user = UserM::find($value['to_id']);
                 $orders['data'][$key]['to_name'] = $user->name;
                 $tag = TagM::whereIn('id',unserialize($user->tag_hospital))->pluck('name');
-                $orders['data'][$key]['tag_hospital'] = $tag;
+                $orders['data'][$key]['hospital'] = $tag[0];
                 $orders['data'][$key]['to_type_name'] = '个人';
             } else if($value['to_type']=='paltform') {
                 $manager = ManagerM::find($value['to_id']);
@@ -76,6 +79,8 @@ class Order extends Controller
                 $orders['data'][$key]['to_name'] = $hospital->name;
                 $orders['data'][$key]['to_type_name'] = '医院';
             }
+            $date = strtotime($value['created_at']);
+            $orders['data'][$key]['order_time'] = date('m',$date).'月'.date('d',$date).'日';
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $orders['data']]);
     }

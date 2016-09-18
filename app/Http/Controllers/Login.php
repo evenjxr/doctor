@@ -26,7 +26,7 @@ class Login extends Controller
             Session::put('manager.id', $manager->id);
             Session::put('manager.role_id', $manager->role_id);
             Session::put('manager.truename', $manager->truename);
-            Session::put('manager.role', RoleM::find($manager->role_id)->en_name);
+            Session::put('manager.role', RoleM::find($manager->role_id)->name);
             return redirect('/');
         }
         return redirect('login/index')->with('errors', '账号密码有误');
