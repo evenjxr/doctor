@@ -11,6 +11,7 @@ use DB;
 use App\Http\Models\Follow as FollowM;
 use App\Http\Models\User as UserM;
 use App\Http\Models\Hospital as HospitalM;
+use App\Http\Models\Tag as TagM;
 
 
 class Follow extends Controller
@@ -67,9 +68,11 @@ class Follow extends Controller
             if ($value['type'] == 'person') {
                 $myFollow['data'][$key]['type_name'] = '个人';
                 $myFollow['data'][$key]['user_name'] = $user->find($value['user_id'])['name'];
+                $myFollow['data'][$key]['user_subject_tag'] = TagM::find(unserialize($user->tag_subject)[0])['name'];
             } else if ($value['type'] == 'hospital') {
                 $myFollow['data'][$key]['type_name'] = '医院';
                 $myFollow['data'][$key]['user_name'] = $hospital->find($value['user_id'])['name'];
+                $myFollow['data'][$key]['user_subject_tag']  = '';
             }
         }
 
@@ -82,6 +85,7 @@ class Follow extends Controller
                 $hotFollow[$key]['type_name'] = '个人';
                 $hotFollow[$key]['user_name'] = $one->name;
                 $hotFollow[$key]['headimgurl'] = $one->headimgurl;
+                $hotFollow[$key]['user_subject_tag'] = TagM::find(unserialize($one->tag_subject)[0])['name'];
             } else if ($value->type == 'hospital') {
                 $one  = $hospital->find($value->user_id);
                 $hotFollow[$key]['type'] = $value->type;
@@ -89,6 +93,7 @@ class Follow extends Controller
                 $hotFollow[$key]['type_name'] = '医院';
                 $hotFollow[$key]['headimgurl'] = $one->headimgurl;
                 $hotFollow[$key]['user_name'] = $one->name;
+                $hotFollow[$key]['user_subject_tag']  = '';
             }
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['myfollow'=>$myFollow['data'],'hotfollow'=>$hotFollow]]);
