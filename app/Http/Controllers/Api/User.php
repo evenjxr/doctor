@@ -70,15 +70,15 @@ class User extends Controller
     {
         $this->validate($request, [
             'name' => 'required|between:2,10',
-            'headimgurl'=> 'required',
-            'sign' => 'required',
+//            'headimgurl'=> 'required',
+//            'sign' => 'required',
             'tag_hospital' => 'required',
             'tag_subject' => 'required',
         ], [
             'name.required' => '姓名不得为空',
             'name.between' => '姓名在2到10之间',
-            'sign.required' => '签名不得为空',
-            'headimgurl.required' => '请上传头像',
+//            'sign.required' => '签名不得为空',
+//            'headimgurl.required' => '请上传头像',
             'tag_hospital.required' => '医院标签不得为空',
             'tag_subject.required' => '科目不得为空',
         ]);
