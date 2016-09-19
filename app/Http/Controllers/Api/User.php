@@ -11,6 +11,7 @@ use App\Http\Models\Tag as TagM;
 use App\Http\Models\Like as LikeM;
 use App\Http\Models\Flower as FlowerM;
 use App\Http\Models\Follow as FollowM;
+use App\Http\Models\User as UserM;
 
 
 
@@ -34,6 +35,20 @@ class User extends Controller
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
     }
 
+    public function lists(Request $request)
+    {
+        $user = $this->getUser($request);
+        $lists = UserM::where('status',2)->where('id','<>',$user->id)->simplePaginate(12,['id','name','headimgurl','tag_subject'])->toArray();;
+        foreach ($lists['data'] as $key=>$value){
+            unset($lists['data'][$key]['tag_subject']);
+            $lists['data'][$key]['hospital'] = '';
+            $tag_id = unserialize($value['tag_subject'])[0];
+            if ($tag_id){
+                $lists['data'][$key]['hospital'] = TagM::find($tag_id)['name'];
+            }
+        }
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' => $lists['data']]);
+    }
 
     public function detail(Request $request)
     {

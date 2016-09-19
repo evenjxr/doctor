@@ -37,9 +37,19 @@ Route::group(['prefix' => 'user'], function () {
 
     Route::get('index',['uses' => 'Api\User@index']);
 
+    Route::get('lists',['uses' => 'Api\User@lists']);
+
     Route::get('detail',['uses' => 'Api\User@detail']);
 
     Route::post('update',['uses' => 'Api\User@update']);
+
+});
+
+Route::group(['prefix' => 'hospital'], function () {
+
+    Route::get('lists',['uses' => 'Api\Hospital@lists']);
+
+    Route::get('detail',['uses' => 'Api\Hospital@detail']);
 
 });
 
