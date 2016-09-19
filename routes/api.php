@@ -43,6 +43,8 @@ Route::group(['prefix' => 'user'], function () {
 
     Route::post('update',['uses' => 'Api\User@update']);
 
+    Route::get('orderlists',['uses' => 'Api\User@orderList']);
+
 });
 
 Route::group(['prefix' => 'hospital'], function () {
@@ -50,6 +52,8 @@ Route::group(['prefix' => 'hospital'], function () {
     Route::get('lists',['uses' => 'Api\Hospital@lists']);
 
     Route::get('detail',['uses' => 'Api\Hospital@detail']);
+
+    Route::get('orderlists',['uses' => 'Api\Hospital@orderList']);
 
 });
 
