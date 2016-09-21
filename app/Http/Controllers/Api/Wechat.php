@@ -45,6 +45,8 @@ class Wechat extends Controller
                 $userInfo = $this->weObj->getOauthUserinfo($res['access_token'],$res['openid']);
                 $userInfo['name'] = $userInfo['nickname'];
                 $userInfo['headimgurl'] = substr($userInfo['headimgurl'],0,-1).'132';
+                unset($userInfo['privilege']);
+                unset($userInfo['language']);
                 $user = UserM::create($userInfo);
             }
             return response()->json(['success' => 'Y', 'msg' => '授权成功','data'=>$user]);
