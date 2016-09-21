@@ -31,22 +31,22 @@ class Order extends Controller
         $params = Input::all();
         $order = OrderM::where('to_id',$user->id);
         if (isset($params['from_type']) && !empty($params['from_type'])) {
-            $order = $order->where('from_type',$params['from_type']);
+            $order = $order->where('type',$params['from_type']);
         }
-        $orders = $order->simplePaginate(20,['id','description','from_type','created_at','from_id'])->toArray();
+        $orders = $order->simplePaginate(20,['id','patient_name','description','type','created_at','from_id'])->toArray();
         foreach ($orders['data'] as $key=>$value){
-            if ($value['from_type']=='person') {
+            if ($value['type']=='person') {
                 $user = UserM::find($value['from_id']);
                 $orders['data'][$key]['from_name'] = $user->name;
                 $tag = TagM::whereIn('id',unserialize($user->tag_hospital))->pluck('name');
                 $orders['data'][$key]['hospital'] = $tag[0];
                 $orders['data'][$key]['from_type_name'] = '个人';
-            } else {
+            } elseif($value['type']=='paltform') {
                 $manager = ManagerM::find($value['from_id']);
                 $orders['data'][$key]['from_name'] = $manager->name;
                 $orders['data'][$key]['from_type_name'] = '官方平台';
             }
-            $orders['data'][$key]['file'] = FileM::where('order_id',$value['id'])->orderby('created_at','desc')->get(['id','path','name']);
+            $orders['data'][$key]['file'] = FileM::where('order_id',$value['id'])->first()['key'];
             $date = strtotime($value['created_at']);
             $orders['data'][$key]['order_time'] = date('m',$date).'月'.date('d',$date).'日';
         }
@@ -60,26 +60,27 @@ class Order extends Controller
         $params = Input::all();
         $order = OrderM::where('from_id',$user->id);
         if (isset($params['to_type']) && !empty($params['to_type'])) {
-            $order = $order->where('to_type',$params['to_type']);
+            $order = $order->where('type',$params['to_type']);
         }
-        $orders = $order->simplePaginate(20,['description','to_type','created_at','to_id'])->toArray();
+        $orders = $order->simplePaginate(20,['id','description','patient_name','type','created_at','to_id'])->toArray();
         foreach ($orders['data'] as $key=>$value){
-            if ($value['to_type']=='person') {
+            if ($value['type']=='person') {
                 $user = UserM::find($value['to_id']);
                 $orders['data'][$key]['to_name'] = $user->name;
                 $tag = TagM::whereIn('id',unserialize($user->tag_hospital))->pluck('name');
                 $orders['data'][$key]['hospital'] = $tag[0];
                 $orders['data'][$key]['to_type_name'] = '个人';
-            } else if($value['to_type']=='paltform') {
+            } else if($value['type']=='paltform') {
                 $manager = ManagerM::find($value['to_id']);
                 $orders['data'][$key]['to_name'] = $manager->name;
                 $orders['data'][$key]['to_type_name'] = '官方平台';
-            } else if($value['to_type']=='hospital') {
+            } else if($value['type']=='hospital') {
                 $hospital = HospitalM::find($value['to_id']);
                 $orders['data'][$key]['to_name'] = $hospital->name;
                 $orders['data'][$key]['to_type_name'] = '医院';
             }
             $date = strtotime($value['created_at']);
+            $orders['data'][$key]['file'] = FileM::where('order_id',$value['id'])->first()['key'];
             $orders['data'][$key]['order_time'] = date('m',$date).'月'.date('d',$date).'日';
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $orders['data']]);
@@ -91,12 +92,14 @@ class Order extends Controller
         $user = $this->getUser($request);
         $this->validateAdd($request);
         $params = Input::all();
-        unset($params['file']);
         $params['from_id'] = $user->id;
         $order = OrderM::firstOrCreate($params);
         if($order){
             if ($request->file('file')) {
-                Common::addPictures($request,$order->id);
+                $files = Common::uploadImages();
+                foreach ($files as $key=>$value){
+                    FileM::create(['key'=>$key,'name'=>$value,'order_id'=>$order->id]);
+                }
             }
             ScoreM::add($user->id,'sendOrder');
             return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => '']); 
@@ -109,14 +112,18 @@ class Order extends Controller
     {
         $this->validate($request, [
             'to_id' => 'required|numeric',
-            'to_type' => 'required|in:person,hospital,platform',
+            'type' => 'required|in:person,hospital,platform',
+            'patient_name' => 'required',
+            'patient_mobile' => 'required',
             'description'=> 'required',
             'video_url' => 'required'
         ], [
             'to_id.required' => '接受者id不得为空',
             'to_id.numeric' => '接受者id只能为数字',
             'type.required' => '转诊类型不得为空',
-            'to_type.in' => '转诊类型不正确',
+            'type.in' => '转诊类型不正确',
+            'patient_name.required' => '患者名称不得为空',
+            'patient_mobile.required' => '患者电话不得为空',
             'description.required' => '描述不得为空',
             'video_url.required' => '录音地址不得卫康',
         ]);

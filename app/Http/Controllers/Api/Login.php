@@ -25,23 +25,22 @@ class Login extends Controller
         $this->validateLogin($request);
         $param = Input::all();
 
-        $user = UserM::firstOrCreate(['mobile'=>$param['mobile']]);
-
-        if (isset($param['inviteCode'])) {
-            $this->insertInvite($user,$param['inviteCode']);
-        }
-        if (!$user->inviteCode) {
-            $user->update(['invite_code'=>$this->makeInviteCode()]);
-        }
-
-        if ($user) {
-            $token = LoginTokenM::makeToken();
-            LoginTokenM::saveToken($user, $token);
-            $data = ['token' => $token, 'user' => $user];
-            return response()->json(['success' => 'Y', 'msg' => '登陆成功', 'data' => $data]);
-        } else {
+        $user = UserM::find($param['id']);
+        if(!$user) {
             return response()->json(['success' => 'N', 'msg' => '登陆失败']);
+
+        } else if(!$user->mobile) {
+            if (isset($param['inviteCode'])) {
+                $this->insertInvite($user,$param['inviteCode']);
+            }
+            $user->update(['mobile'=>$param['mobile'],'invite_code'=>$this->makeInviteCode()]);
+        } else if($user->mobile != $param['mobile']) {
+            return response()->json(['success' => 'Y', 'msg' => '绑定手机号不一致']);
         }
+        $token = LoginTokenM::makeToken();
+        LoginTokenM::saveToken($user, $token);
+        $data = ['token' => $token, 'user' => $user];
+        return response()->json(['success' => 'Y', 'msg' => '绑定手机号不一致','data'=>$data]);
     }
 
 
@@ -64,12 +63,10 @@ class Login extends Controller
     private function makeAuthSMS($mobile)
     {
         $code = rand(100000, 999999);
-        //$code = '123456';
         $expiresAt10 = Carbon::now()->addMinutes(10);
         $expiresAt1 = Carbon::now()->addMinutes(1);
         Cache::put($mobile . LoginTokenM::SMS_TYPE_LOGIN, $code, $expiresAt10);
         Cache::put($mobile . LoginTokenM::SMS_TYPE_LOGIN_RESEND, 1, $expiresAt1);
-        //return $code;
         SMS::send(LoginTokenM::SMS_TYPE_LOGIN, $mobile, ['code'=>"$code",'product'=>'飞医飞药']);
         return $code;
     }
@@ -101,9 +98,11 @@ class Login extends Controller
     {
         Validator::extend('check_sms_code', 'App\Http\Validators\Login@checkSMSCode');
         $this->validate($request, [
+            'id' => 'required',
             'mobile' => 'required|digits:11',
             'smscode' => 'required|digits:6|check_sms_code',
         ], [
+            'id.required' => '用户id不得为空',
             'mobile.required' => '请填写您的手机号。',
             'mobile.digits' => '请输入一个正确的手机号。',
             'smscode.required' => '验证码不得为空',
@@ -112,9 +111,7 @@ class Login extends Controller
         ]);
     }
 
-
-
-
+    
     private function validateRegist($request)
     {
         Validator::extend('check_sms_code', 'App\Validators\Regist@checkSMSCode');
@@ -151,7 +148,5 @@ class Login extends Controller
             'mobile.whether_login_sms_sent' => '短信验证码已发送！',
         ]);
     }
-
-
 
 }

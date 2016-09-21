@@ -24,7 +24,18 @@ class Common extends Controller
         foreach ($_FILES as $value) {
             $key = date('YmdHis').rand(1000,9999).'_'.$value['name'];
             OSS::upload($key, $value['tmp_name'],['ContentType'=>self::contentType(array_last(explode('.',$value['name'])))]);
-            array_push($images,[$value['name']=>$key]);
+            array_push($images,[$key=>$value['name']]);
+        }
+        return $images;
+    }
+
+    static public function uploadImages()
+    {
+        $images = [];
+        foreach ($_FILES as $value) {
+            $key = date('YmdHis').rand(1000,9999).'_'.$value['name'];
+            OSS::upload($key, $value['tmp_name'],['ContentType'=>self::contentType(array_last(explode('.',$value['name'])))]);
+            array_push($images,[$key=>$value['name']]);
         }
         return $images;
     }
