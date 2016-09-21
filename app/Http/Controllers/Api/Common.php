@@ -41,12 +41,6 @@ class Common extends Controller
 
         return $debug ? $weObj->valid() : $this->wechat = $weObj;
     }
-
-    public function wechatAuth()
-    {
-        $this->wechatInit(false);
-        return $this->wechat->getOauthRedirect(URL::route('user.wechat.auth'));
-    }
     
 
     public function walletType()

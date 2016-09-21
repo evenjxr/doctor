@@ -38,13 +38,6 @@ class User extends Controller
     }
 
 
-    public function weichatAuth()
-    {
-        $param = Input::all();
-        dd($param);
-    }
-
-
     public function orderList(Request $request)
     {
         $user = $this->getUser($request);

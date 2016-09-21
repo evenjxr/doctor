@@ -19,14 +19,21 @@ use Illuminate\Http\Request;
 
 
 
+Route::group(['prefix' => 'wechat'], function () {
+
+    Route::post('upload',['uses' => 'Api\Wechat@uploadFiles']);
+
+    Route::get('serverauth',['uses' => 'Api\Wechat@serverAuth']);
+
+    Route::get('userauth',['uses' => 'Api\Wechat@userAuth']);
+
+    Route::get('addorfinduser',['uses' => 'Api\Wechat@addOrFindUser','as' => 'find.add.user']);
+
+});
+
 Route::group(['prefix' => 'common'], function () {
 
     Route::post('upload',['uses' => 'Api\Common@uploadFiles']);
-
-    Route::get('wechatinit',['uses' => 'Api\Common@wechatInit']);
-
-    Route::get('wechatauth',['uses' => 'Api\Common@wechatAuth']);
-
 });
 
 Route::group(['prefix' => 'login'], function () {
