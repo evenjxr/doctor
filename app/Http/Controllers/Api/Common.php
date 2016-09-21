@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\URL;
 use Validator;
 use Input;
 use App\Http\Services\OSS;
@@ -15,6 +16,7 @@ use  App\Http\Models\File as FileM;
 
 class Common extends Controller
 {
+    public $wechat;
     
     public function uploadFiles()
     {
@@ -27,18 +29,25 @@ class Common extends Controller
         return $images;
     }
     
-    public function wechatInit()
+    public function wechatInit($debug = true)
     {
        $options = array(
             'token'=>'weixin',
-            'encodingaeskey'=>'encodingaeskey',
+            'encodingaeskey'=>'cQ9gbUiSBRK2VuPnyMDi61i4oDXn29QTe4xpo1MTFhb',
             'appid'=>'wx2a0cd2e2bb3c55b4',
             'appsecret'=>'3b2928f2d55ecbe95a01dc3dc5d75b67'
        );
         $weObj = new Wechat($options);
-        return $weObj->valid();
+
+        return $debug ? $weObj->valid() : $this->wechat = $weObj;
     }
 
+    public function wechatAuth()
+    {
+        $this->wechatInit(false);
+        return $this->wechat->getOauthRedirect(URL::route('user.wechat.auth'));
+    }
+    
 
     public function walletType()
     {

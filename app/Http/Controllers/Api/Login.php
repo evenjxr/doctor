@@ -17,8 +17,6 @@ use App\Http\Models\InviteRecord as InviteRecordM;
 
 
 
-
-
 class Login extends Controller
 {
     public function index(Request $request)

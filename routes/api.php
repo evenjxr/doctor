@@ -25,6 +25,8 @@ Route::group(['prefix' => 'common'], function () {
 
     Route::get('wechatinit',['uses' => 'Api\Common@wechatInit']);
 
+    Route::get('wechatauth',['uses' => 'Api\Common@wechatAuth']);
+
 });
 
 Route::group(['prefix' => 'login'], function () {
@@ -46,6 +48,8 @@ Route::group(['prefix' => 'tag'], function () {
 Route::group(['prefix' => 'user'], function () {
 
     Route::get('index',['uses' => 'Api\User@index']);
+
+    Route::get('weichatauth',['uses' => 'Api\User@weichatAuth','as' => 'user.wechat.auth']);
 
     Route::get('lists',['uses' => 'Api\User@lists']);
 
