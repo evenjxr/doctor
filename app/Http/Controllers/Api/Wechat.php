@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Input;
 use Illuminate\Support\Facades\URL;
 use App\Http\Services\Wechat as WechatS;
+use App\Http\Models\User as UserM;
 
 
 class Wechat extends Controller
@@ -38,15 +39,19 @@ class Wechat extends Controller
     {
         $code = Input::get('code');
         if ($code) {
-            $userData = $this->getUserInfo();
-            dd($userData);
-            return response()->json(['success' => 'Y', 'msg' => '跟新成功']);
+            $res = $this->getAccessOrOpenid();
+            $user = UserM::where('openid',$res['openid'])->find();
+            if (!$user) {
+                $userInfo = $this->weObj->getOauthUserinfo($res['access_token'],$res['openid']);
+                dd($userInfo);
+            }
+            return response()->json(['success' => 'Y', 'msg' => '授权成功','data'=>$user]);
         } else {
             return response()->json(['success' => 'N', 'msg' => '授权失败请稍后再试']);
         }
     }
 
-    private function getUserInfo()
+    private function getAccessOrOpenid()
     {
         return $this->weObj->getOauthAccessToken();
     }
