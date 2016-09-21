@@ -23,6 +23,8 @@ Route::group(['prefix' => 'common'], function () {
 
     Route::post('upload',['uses' => 'Api\Common@uploadFiles']);
 
+    Route::get('wechatinit',['uses' => 'Api\Common@wechatInit']);
+
 });
 
 Route::group(['prefix' => 'login'], function () {

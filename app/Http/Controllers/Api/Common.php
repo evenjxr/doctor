@@ -36,7 +36,7 @@ class Common extends Controller
             'appsecret'=>'3b2928f2d55ecbe95a01dc3dc5d75b67'
        );
         $weObj = new Wechat($options);
-        $weObj->valid();
+        return $weObj->valid();
     }
 
 
