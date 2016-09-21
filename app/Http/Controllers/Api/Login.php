@@ -65,15 +65,15 @@ class Login extends Controller
 
     private function makeAuthSMS($mobile)
     {
-        //$code = rand(100000, 999999);
-        $code = '123456';
+        $code = rand(100000, 999999);
+        //$code = '123456';
         $expiresAt10 = Carbon::now()->addMinutes(10);
         $expiresAt1 = Carbon::now()->addMinutes(1);
         Cache::put($mobile . LoginTokenM::SMS_TYPE_LOGIN, $code, $expiresAt10);
         Cache::put($mobile . LoginTokenM::SMS_TYPE_LOGIN_RESEND, 1, $expiresAt1);
+        //return $code;
+        SMS::send(LoginTokenM::SMS_TYPE_LOGIN, $mobile, ['code'=>"$code",'product'=>'飞医飞药']);
         return $code;
-//        SMS::send(LoginTokenM::SMS_TYPE_LOGIN, $mobile, $code);
-//        return $code;
     }
 
 

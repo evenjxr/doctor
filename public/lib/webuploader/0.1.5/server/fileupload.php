@@ -38,12 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 if ( !empty($_REQUEST[ 'debug' ]) ) {
     $random = rand(0, intval($_REQUEST[ 'debug' ]) );
     if ( $random === 0 ) {
-        header("HTTP/1.0 500 Internal Server Error");
+        header("HTTP/1.0 500 Internal Services Error");
         exit;
     }
 }
 
-// header("HTTP/1.0 500 Internal Server Error");
+// header("HTTP/1.0 500 Internal Services Error");
 // exit;
 
 

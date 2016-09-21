@@ -229,4 +229,11 @@ return [
         'HttpClient' => 'Vinelab\Http\Facades\Client::class',
     ],
 
+    'ossServer' => 'http://oss-cn-beijing.aliyuncs.com',
+    'ossServerInternal' => 'http://oss-cn-beijing.aliyuncs.com',
+
+
+    'AccessKeyId' => 'LTAIDyqiHqcpMYft',
+    'AccessKeySecret' => 'Cmrsffstuu1ulisebiRjz9Jf9vIwOt'
+
 ];

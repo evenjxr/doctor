@@ -24,7 +24,7 @@ Route::group(['middleware' => 'manager.login'], function () {
     });
 
     Route::group(['prefix' => 'common'], function () {
-
+        
         Route::post('upload',['uses' => 'Common@upload', 'as' => 'common.upload']);
 
     });

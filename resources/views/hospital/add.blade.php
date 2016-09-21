@@ -9,6 +9,12 @@
                 </div>
             </div>
             <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>医院简称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="short_name" name="short_name">
+                </div>
+            </div>
+            <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>城市：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" class="input-text" placeholder="" name="city" id="city">
@@ -32,6 +38,44 @@
                     <input type="text" class="input-text" value="" placeholder="" id="phone" name="phone">
                 </div>
             </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">微博URL：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="weibourl">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">微信QR：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="wechatqr">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">好大夫URL：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="doctorurl">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">百度百科URL：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="baikeurl">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">百度经度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="longitude">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">百度纬度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" placeholder="" id="" name="latitude">
+                </div>
+            </div>
+
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">封面：</label>
                 <div class="formControls col-xs-8 col-sm-9">

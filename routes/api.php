@@ -17,6 +17,14 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //})->middleware('auth:api');
 
+
+
+Route::group(['prefix' => 'common'], function () {
+
+    Route::post('upload',['uses' => 'Api\Common@uploadFiles']);
+
+});
+
 Route::group(['prefix' => 'login'], function () {
 
     Route::post('sms',['uses' => 'Api\Login@sms']);

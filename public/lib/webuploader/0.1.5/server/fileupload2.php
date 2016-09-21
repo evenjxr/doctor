@@ -22,7 +22,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-// header("HTTP/1.0 500 Internal Server Error");
+// header("HTTP/1.0 500 Internal Services Error");
 
 // echo mymd5('upload/C程序设计语言.pdf'); die;
 // Support CORS
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 if ( !empty($_REQUEST[ 'debug' ]) ) {
     $random = rand(0, intval($_REQUEST[ 'debug' ]) );
     if ( $random === 0 ) {
-        header("HTTP/1.0 500 Internal Server Error");
+        header("HTTP/1.0 500 Internal Services Error");
         exit;
     }
 }

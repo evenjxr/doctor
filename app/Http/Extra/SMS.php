@@ -11,18 +11,19 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 class SMS
 {
     use DispatchesJobs;
-    const SMS_CONFIRM = 'sms_server_confirm';
 
-    const XSEND_URL = 'https://api.submail.cn/message/xsend';
+
+    const XSEND_URL = 'http://gw.api.taobao.com/router/rest';
+    const METHOD = 'alibaba.aliqin.fc.sms.num.send';//接口名称
+    const ENCRYPT = 'md5'; //签名的摘要算法，可选值为：hmac，md5。
+    const FORMAT = 'json'; //响应格式，可选xml（默认）及json
+    const alidayu_appkey = '23448191';
+    const alidayu_secretKey = '017c0cff3c8c67e0c4253ed329a2700b';
+    const sign_name = '飞医飞药'; // $sms_free_sign_name,短信签名，必须先申请通过，参数传入
+
+
     const MULTIXSEND_URL = 'https://api.submail.cn/message/multixsend';
-    const APP_ID = '11868';
-    const APP_KEY = 'ab32f2c8e1bc986de7658a2ff2dfb20a';
 
-//    const XSEND_URL = '	https://eco.taobao.com/router/rest';
-//    const MULTIXSEND_URL = 'https://api.submail.cn/message/multixsend';
-//    const appkey = '23448191';
-//    const secretKey = '017c0cff3c8c67e0c4253ed329a2700b';
-    
     
     public static function projectInfo($app)
     {
@@ -47,48 +48,76 @@ class SMS
         } elseif (!is_array($vars)) {
             throw new Exception(response()->json(['msg' => '短信发送请求参数错误'], 422));
         }
-        return self::dosend($to, $config, $vars);
+        $param['timestamp'] = date("Y-m-d H:i:s");
+        $param['v'] = '2.0';//程序版本，目前为2.0
+        $param['app_key'] = self::alidayu_appkey;
+        $param['method'] = self::METHOD;
+        $param['format'] = self::FORMAT;
+        $param['sms_type'] = 'normal';//短信类型
+        $param['sign_method'] = self::ENCRYPT;
+        $param['rec_num'] = $to;
+        $param['sms_free_sign_name'] = self::sign_name;
+        $param['sms_template_code'] = $config['id'];
+        $param['sms_param'] = json_encode($vars);
+
+        $signparam = self::setSign($param);
+        return self::dosend($signparam,$param);
+    }
+
+
+    protected static function setSign($param)
+    {
+        ksort($param);
+        $links_info = self::createLinkstring($param);
+        $links_info = self::alidayu_secretKey.$links_info.self::alidayu_secretKey;
+        if (self::ENCRYPT == 'md5') {
+            return strtoupper(md5($links_info));
+        } else {
+            return strtoupper(hmac($links_info));
+        }
     }
 
     /**
-     * @param $pro 业务
-     * @param $to 发送对象手机号
-     * @param $vars 变量
-     * @return bool|string
+     * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+     * @param $para 需要拼接的数组
+     * return 拼接完成以后的字符串
      */
-    public static function sendTime($pro, $to, $vars)
+    protected static function createLinkstring($para)
     {
-        $config = self::projectInfo($pro);
-
-        if (!$config) {
-            throw new Exception(response()->json(['msg' => '短信发送请求异常'], 422));
+        $arg = "";
+        foreach($para as $value => $key) {
+            $arg .= $value . $key;
         }
-        $vars = ['time' => $vars];
-        return self::dosend($to, $config, $vars);
+        return $arg;
     }
 
 
-    protected static function dosend($to, $config, $vars)
+    protected static function dosend($signparam, $param)
     {
         $result = HttpClient::post([
             'url' => self::XSEND_URL,
             'params' => [
-                'appid' => self::APP_ID,
-                'signature' => self::APP_KEY,
-                'to' => $to,
-                'project' => $config['id'],
-                'vars' => json_encode($vars),
+                'sign' => $signparam,
+                'timestamp' => $param['timestamp'],
+                'v'=>$param['v'],
+                'app_key' => $param['app_key'],
+                'method' => $param['method'],
+                'format' => $param['format'],
+                'sms_type' => $param['sms_type'],
+                'sign_method' => $param['sign_method'],
+                'rec_num' => $param['rec_num'],
+                'sms_free_sign_name' => $param['sms_free_sign_name'],
+                'sms_template_code' => $param['sms_template_code'],
+                'sms_param' => $param['sms_param'],
             ],
         ]);
 
         $resRaw = json_decode($result->content(), true);
-        if (isset($resRaw['status']) && $resRaw['status'] == 'success') {
-            return 'sms_success';
-        } elseif (isset($resRaw['status']) && $resRaw['status'] == 'error') {
-            return 'sms_error';
+        if (isset($resRaw['error_response'])) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
-
     }
 
     /**
