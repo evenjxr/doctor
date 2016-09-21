@@ -21,8 +21,6 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'wechat'], function () {
 
-    Route::post('upload',['uses' => 'Api\Wechat@uploadFiles']);
-
     Route::get('serverauth',['uses' => 'Api\Wechat@serverAuth']);
 
     Route::get('userauth',['uses' => 'Api\Wechat@userAuth']);

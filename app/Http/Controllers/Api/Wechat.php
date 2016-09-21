@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Input;
-use App\Http\Services\Wechat;
-use App\Http\Models\User as UserM;
-
+use Illuminate\Support\Facades\URL;
+use App\Http\Services\Wechat as WechatS;
 
 
 class Wechat extends Controller
@@ -22,7 +21,7 @@ class Wechat extends Controller
             'appid'=>'wx2a0cd2e2bb3c55b4',
             'appsecret'=>'3b2928f2d55ecbe95a01dc3dc5d75b67'
         );
-        $this->weObj = new Wechat($options);
+        $this->weObj = new WechatS($options);
     }
 
     public function serverAuth()
@@ -49,7 +48,7 @@ class Wechat extends Controller
 
     private function getUserInfo()
     {
-        $this->weObj->getOauthAccessToken();
+        return $this->weObj->getOauthAccessToken();
     }
 
 }
