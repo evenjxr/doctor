@@ -34,6 +34,12 @@ class Wechat extends Controller
     {
         return $this->weObj->getOauthRedirect(Input::get('url'));
     }
+    
+    public function getUserInfo($access_token,$openid)
+    {
+        return $this->weObj->getOauthUserinfo($access_token,$openid);    
+    }
+    
 
     public function getAccessOrOpenid($code)
     {

@@ -29,7 +29,7 @@ class Login extends Controller
         
         $user = UserM::where('openid',$res['openid'])->first();
         if (!$user) {
-            $userInfo = $wxObj->getOauthUserinfo($res['access_token'],$res['openid']);
+            $userInfo = $wxObj->getUserInfo($res['access_token'],$res['openid']);
             $userInfo['name'] = $userInfo['nickname'];
             $userInfo['headimgurl'] = substr($userInfo['headimgurl'],0,-1).'132';
             unset($userInfo['privilege']);
