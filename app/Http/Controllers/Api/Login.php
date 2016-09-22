@@ -31,6 +31,7 @@ class Login extends Controller
         if (!$user) {
             $userInfo = $wxObj->getUserInfo($res['access_token'],$res['openid']);
             $userInfo['name'] = $userInfo['nickname'];
+            $userInfo['mobile'] = $userInfo['mobile'];
             $userInfo['headimgurl'] = substr($userInfo['headimgurl'],0,-1).'132';
             unset($userInfo['privilege']);
             unset($userInfo['language']);
