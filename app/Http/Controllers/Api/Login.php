@@ -24,23 +24,29 @@ class Login extends Controller
         //验证参数
         $this->validateLogin($request);
         $param = Input::all();
-
-        $user = UserM::find($param['id']);
-        if(!$user) {
-            return response()->json(['success' => 'N', 'msg' => '登陆失败']);
-
+        $wxObj = new Wechat();
+        $res = $wxObj->getAccessOrOpenid($param['code']);
+        
+        $user = UserM::where('openid',$res['openid'])->first();
+        if (!$user) {
+            $userInfo = $this->weObj->getOauthUserinfo($res['access_token'],$res['openid']);
+            $userInfo['name'] = $userInfo['nickname'];
+            $userInfo['headimgurl'] = substr($userInfo['headimgurl'],0,-1).'132';
+            unset($userInfo['privilege']);
+            unset($userInfo['language']);
+            $user = UserM::create($userInfo);
         } else if(!$user->mobile) {
             if (isset($param['inviteCode'])) {
                 $this->insertInvite($user,$param['inviteCode']);
             }
             $user->update(['mobile'=>$param['mobile'],'invite_code'=>$this->makeInviteCode()]);
         } else if($user->mobile != $param['mobile']) {
-            return response()->json(['success' => 'Y', 'msg' => '绑定手机号不一致']);
+            return response()->json(['success' => 'N', 'msg' => '绑定手机号不一致']);
         }
         $token = LoginTokenM::makeToken();
         LoginTokenM::saveToken($user, $token);
         $data = ['token' => $token, 'user' => $user];
-        return response()->json(['success' => 'Y', 'msg' => '绑定手机号不一致','data'=>$data]);
+        return response()->json(['success' => 'Y', 'msg' => '登录成功','data'=>$data]);
     }
 
 
@@ -98,11 +104,11 @@ class Login extends Controller
     {
         Validator::extend('check_sms_code', 'App\Http\Validators\Login@checkSMSCode');
         $this->validate($request, [
-            'id' => 'required',
             'mobile' => 'required|digits:11',
             'smscode' => 'required|digits:6|check_sms_code',
+            'code' => 'required',
         ], [
-            'id.required' => '用户id不得为空',
+            'code.required' => '授权有误,请稍后再试',
             'mobile.required' => '请填写您的手机号。',
             'mobile.digits' => '请输入一个正确的手机号。',
             'smscode.required' => '验证码不得为空',

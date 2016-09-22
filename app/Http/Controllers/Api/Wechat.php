@@ -32,32 +32,12 @@ class Wechat extends Controller
 
     public function userAuth()
     {
-        return $this->weObj->getOauthRedirect(URL::route('find.add.user'));
+        return $this->weObj->getOauthRedirect(Input::get('url'));
     }
 
-    public function addOrFindUser()
+    public function getAccessOrOpenid($code)
     {
-        $code = Input::get('code');
-        if ($code) {
-            $res = $this->getAccessOrOpenid();
-            $user = UserM::where('openid',$res['openid'])->first();
-            if (!$user) {
-                $userInfo = $this->weObj->getOauthUserinfo($res['access_token'],$res['openid']);
-                $userInfo['name'] = $userInfo['nickname'];
-                $userInfo['headimgurl'] = substr($userInfo['headimgurl'],0,-1).'132';
-                unset($userInfo['privilege']);
-                unset($userInfo['language']);
-                $user = UserM::create($userInfo);
-            }
-            return response()->json(['success' => 'Y', 'msg' => '授权成功','data'=>$user]);
-        } else {
-            return response()->json(['success' => 'N', 'msg' => '授权失败请稍后再试']);
-        }
-    }
-
-    private function getAccessOrOpenid()
-    {
-        return $this->weObj->getOauthAccessToken();
+        return $this->weObj->getOauthAccessToken($code);
     }
 
 }
