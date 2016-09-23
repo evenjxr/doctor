@@ -45,5 +45,11 @@ class Wechat extends Controller
     {
         return $this->weObj->getOauthAccessToken($code);
     }
+    
+    public function jsOption()
+    {
+        $url = Input::get('url');
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' =>$this->weObj->getJsSign($url)]);
+    }
 
 }

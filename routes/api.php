@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'wechat'], function () {
 
+    Route::get('jsoption',['uses' => 'Api\Wechat@jsOption']);
+
     Route::get('serverauth',['uses' => 'Api\Wechat@serverAuth']);
 
     Route::get('userauth',['uses' => 'Api\Wechat@userAuth']);
