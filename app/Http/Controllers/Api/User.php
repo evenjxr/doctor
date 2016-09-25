@@ -60,7 +60,7 @@ class User extends Controller
                 array_push($contactUser_id,$value['from_id']);
             }
         }
-
+        $contactUser = [];
         $user = new UserM();
         foreach ($contactUser_id as $key => $value) {
             $one = $user->find($value);

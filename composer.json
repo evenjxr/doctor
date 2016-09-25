@@ -11,8 +11,7 @@
         "vinelab/http": "dev-master",
         "johnlui/aliyun-oss": "*",
         "aliyuncs/oss-sdk-php": "~2.0",
-        "dodgepudding/wechat-php-sdk": "*",
-        "garveen/laravoole": "~0.2"
+        "dodgepudding/wechat-php-sdk": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

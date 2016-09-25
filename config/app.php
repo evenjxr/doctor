@@ -178,7 +178,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Vinelab\Http\HttpServiceProvider::class,
-
     ],
 
     /*

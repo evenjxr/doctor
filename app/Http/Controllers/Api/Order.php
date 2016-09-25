@@ -47,10 +47,10 @@ class Order extends Controller
                 $orders['data'][$key]['from_type_name'] = '官方平台';
             }
             $orders['data'][$key]['file'] = FileM::where('order_id',$value['id'])->first()['key'];
+
             $date = strtotime($value['created_at']);
             $orders['data'][$key]['order_time'] = date('m',$date).'月'.date('d',$date).'日';
         }
-
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $orders['data']]);
     }
 
@@ -94,13 +94,17 @@ class Order extends Controller
         $params = Input::all();
         $params['from_id'] = $user->id;
         $order = OrderM::firstOrCreate($params);
+
         if($order){
-            if ($request->file('file')) {
-                $files = Common::uploadImages();
-                foreach ($files as $key=>$value){
-                    FileM::create(['key'=>$key,'name'=>$value,'order_id'=>$order->id]);
-                }
+            foreach ($params['file'] as $key=>$value){
+                FileM::create(['key'=>$value,'order_id'=>$order->id]);
             }
+//            if ($request->file('file')) {
+//                $files = Common::uploadImages();
+//                foreach ($files as $key=>$value){
+//                    FileM::create(['key'=>$key,'name'=>$value,'order_id'=>$order->id]);
+//                }
+//            }
             ScoreM::add($user->id,'sendOrder');
             return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => '']); 
         } else {
