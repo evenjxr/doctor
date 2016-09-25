@@ -92,19 +92,20 @@ class Order extends Controller
         $user = $this->getUser($request);
         $this->validateAdd($request);
         $params = Input::all();
+        unset($params['file']);
         $params['from_id'] = $user->id;
         $order = OrderM::firstOrCreate($params);
 
         if($order){
-            foreach ($params['file'] as $key=>$value){
+            foreach (Input::get('file') as $key=>$value){
                 FileM::create(['key'=>$value,'order_id'=>$order->id]);
             }
-//            if ($request->file('file')) {
-//                $files = Common::uploadImages();
-//                foreach ($files as $key=>$value){
-//                    FileM::create(['key'=>$key,'name'=>$value,'order_id'=>$order->id]);
-//                }
-//            }
+            // if ($request->file('file')) {
+            //     $files = Common::uploadImages();
+            //     foreach ($files as $key=>$value){
+            //         FileM::create(['key'=>$key,'name'=>$value,'order_id'=>$order->id]);
+            //     }
+            // }
             ScoreM::add($user->id,'sendOrder');
             return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => '']); 
         } else {

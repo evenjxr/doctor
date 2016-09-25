@@ -48,11 +48,14 @@ class Hospital extends Controller
               desc limit '.$start.',6');
 
         $hospital = new HospitalM();
+        $contactHospital = [];
+        $hotHospital = [];
         foreach ($contactHospital_id as $key => $value) {
             $one = $hospital->find($value);
             $contactHospital[$key]['hospital_id'] = $value;
             $contactHospital[$key]['hospital_name'] = $one->name;
             $contactHospital[$key]['photo'] = $one->headimgurl;
+            $contactHospital[$key]['description'] = $one->description;
         }
 
         foreach ($hotFollows as $key => $value) {
@@ -60,6 +63,8 @@ class Hospital extends Controller
             $hotFollow[$key]['hospital_id'] = $value->user_id;
             $hotFollow[$key]['hospital_name'] = $one->name;
             $hotFollow[$key]['photo'] = $one->photo;
+            $hotFollow[$key]['description'] = $one->description;
+
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['contactHospital'=>$contactHospital,'hotHospital'=>$hotFollow]]);
     }
