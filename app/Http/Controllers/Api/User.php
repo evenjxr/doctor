@@ -62,6 +62,7 @@ class User extends Controller
         }
 
         $user = new UserM();
+        $contactUser = [];
         foreach ($contactUser_id as $key => $value) {
             $one = $user->find($value);
             $contactUser[$key]['user_id'] = $value;
