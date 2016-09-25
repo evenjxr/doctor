@@ -29,6 +29,22 @@ Route::group(['middleware' => 'manager.login'], function () {
 
     });
 
+    Route::group(['prefix' => 'system'], function () {
+
+        Route::get('add',['uses' => 'System@add', 'as' => 'system.add']);
+
+        Route::post('store',['uses' => 'System@store', 'as' => 'system.store']);
+
+        Route::get('lists',['uses' => 'System@lists', 'as' => 'system.lists']);
+
+        Route::get('detail',['uses' => 'System@detail', 'as' => 'system.detail']);
+
+        Route::post('update',['uses' => 'System@update', 'as' => 'system.update']);
+
+        Route::post('delete',['uses' => 'System@delete', 'as' => 'system.delete']);
+
+    });
+
     Route::group(['prefix' => 'user'], function () {
 
         Route::get('lists', ['uses' => 'User@lists', 'as' => 'user.lists']);

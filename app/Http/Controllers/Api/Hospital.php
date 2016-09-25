@@ -30,7 +30,8 @@ class Hospital extends Controller
         $page = Input::get('page') ? : 1;
         $start = ($page-1) * 6;
 
-        $contactHospital_ids = OrderM::where(['from_type'=>'hospital','to_id'=>$user->id])->orWhere(['to_type'=>'hospital','from_id'=>$user->id])->simplePaginate(6,['from_id','to_id'])->toArray()['data'];
+        $contactHospital_ids = OrderM::where(['type'=>'hospital','to_id'=>$user->id])
+            ->orWhere(['type'=>'hospital','from_id'=>$user->id])->simplePaginate(6,['from_id','to_id'])->toArray()['data'];
         $contactHospital_id = [];
         foreach ($contactHospital_ids as $key=>$value){
             if ($value['from_id'] == $user->id && !in_array($value['to_id'],$contactHospital_id)) {

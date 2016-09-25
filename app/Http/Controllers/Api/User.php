@@ -49,8 +49,8 @@ class User extends Controller
               group by `user_id`,`type` 
               order by count  
               desc limit '.$start.',6');
-        $contactUser_ids = OrderM::where('from_type','person')->where('to_type','person')
-            ->where('from_id',$user->id)->orWhere('to_id',$user->id)->simplePaginate(6,['from_id','to_id'])->toArray()['data'];
+        $contactUser_ids = OrderM::where('type','person')->where('from_id',$user->id)
+            ->orWhere('to_id',$user->id)->simplePaginate(6,['from_id','to_id'])->toArray()['data'];
 
         $contactUser_id = [];
         foreach ($contactUser_ids as $key=>$value){
