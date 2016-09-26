@@ -74,7 +74,7 @@ class StartSwoole extends Command
 
         $server->on('close', function ($server, $fd) {
             $this->sendMessage($server,'好友已下线');
-            //$this->delOnline();
+            $this->delOnline();
         });
         $server->start();
     }
