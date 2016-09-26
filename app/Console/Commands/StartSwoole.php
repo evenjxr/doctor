@@ -98,7 +98,7 @@ class StartSwoole extends Command
     {
         $online = OnlineM::where('user_id',$this->user_id)->first();
         if($online){
-            return $online->update(['fd'=>$fd]);
+            return $online->update(['fd'=>$fd,'user_id'=>$this->user_id]);
         } else {
             return OnlineM::create(['fd'=>$fd,'user_id'=>$this->user_id]);
         }
