@@ -53,17 +53,22 @@ class StartSwoole extends Command
             $message = MessageM::where('order_id',$this->order_id)
                 ->where('status','1')
                 ->where('to_id',$this->to_id)
-                ->get(['content','created_at'])->toArray();
-            $this->sendMessage($server,$message,1);
+                ->get(['id','content','created_at'])->toArray();
+            $res = $this->sendMessage($server,$message,1);
+            if ($res == 1){
+                $this->updateMessage($message,2);
+            } else if($res == 0) {
+                $this->updateMessage($message,1);
+            }
         });
 
 
         $server->on('message', function ($server, $frame)  {
             $res = $this->sendMessage($server,$frame->data);
             if ($res == 1){
-                $this->insertMessage($frame->data,1);
-            } else if($res == 2) {
                 $this->insertMessage($frame->data,2);
+            } else if($res == 0) {
+                $this->insertMessage($frame->data,1);
             }
         });
 
@@ -91,9 +96,9 @@ class StartSwoole extends Command
 
     private function addOnline($fd)
     {
-        $online = OnlineM::where('fd',$fd)->first();
+        $online = OnlineM::where('user_id',$this->user_id)->first();
         if($online){
-            return $online->update(['user_id'=>$this->user_id]);
+            return $online->update(['fd'=>$fd]);
         } else {
             return OnlineM::create(['fd'=>$fd,'user_id'=>$this->user_id]);
         }
@@ -117,7 +122,7 @@ class StartSwoole extends Command
             for ($i=0;$i<$times;$i++) {
                 if(is_array($message)  && count($message)>0) {
                     $flag = $server->push($online->fd,json_encode($message));
-                } else {
+                } else if($message) {
                     $flag = $server->push($online->fd,json_encode(['content'=>$message,'created_at'=>date('Y-m-d H:i:s')]));
                 }
                 if($flag ==1 ) break;
@@ -125,15 +130,24 @@ class StartSwoole extends Command
             if($flag ==1) {
                 return 1;
             } else {
-                return 2;
+                return 0;
             }
         } else {
-            return 1;
+            return 0;
         }
     }
 
     private function insertMessage($message,$status=1)
     {
        return MessageM::create(['content'=>$message,'order_id'=>$this->order_id,'from_id'=>$this->user_id,'to_id'=>$this->to_id,'status'=>$status]);
+    }
+
+    private function updateMessage($messages,$status=1)
+    {
+        $ids = [];
+        foreach ($messages as $value) {
+            array_push($ids,$value['id']);
+        }
+        return MessageM::whereIn('id',$ids)->update(['status'=>$status]);
     }
 }
