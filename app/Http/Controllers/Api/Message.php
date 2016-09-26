@@ -39,7 +39,11 @@ class Message extends Controller
             $users[$key]['order_id'] = $value->id;
             $users[$key]['user_id'] = $user->id;
             $users[$key]['type'] = $value->type;
-            $users[$key]['unread'] = MessageM::where(['to_id'=>$user->id,'status'=>1])->count('id');
+            $message =  MessageM::where(['to_id'=>$user->id,'status'=>1]);
+            $users[$key]['unread'] =$message->count('id');
+            $last_message = $message->orderBy('id','desc')->first()->toArray();
+            $users[$key]['last_message'] = $last_message['content'] ? : '';
+            $users[$key]['last_message_time'] = $last_message['created_at'] ? : '';
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $users]);
     }
