@@ -23,7 +23,7 @@ class StartSwoole extends Command
      * @var string
      */
     protected $description = 'Command 开启 websocket';
-    
+
     public $server;
     public $user_id;
     public $to_id;
@@ -52,7 +52,7 @@ class StartSwoole extends Command
             $this->chatInit($request);
             $message = MessageM::where('order_id',$this->order_id)
                 ->where('status','1')
-                ->where('to_id',$this->to_id)
+                ->where('to_id',$this->user_id)
                 ->get(['id','content','created_at'])->toArray();
             $res = $this->sendMessage($server,$message,1);
             if ($res == 1){
@@ -74,7 +74,7 @@ class StartSwoole extends Command
 
         $server->on('close', function ($server, $fd) {
             $this->sendMessage($server,'好友已下线');
-            $this->delOnline();
+            //$this->delOnline();
         });
         $server->start();
     }
@@ -96,9 +96,9 @@ class StartSwoole extends Command
 
     private function addOnline($fd)
     {
-        $online = OnlineM::where('user_id',$this->user_id)->first();
+        $online = OnlineM::where('fd',$fd)->first();
         if($online){
-            return $online->update(['fd'=>$fd,'user_id'=>$this->user_id]);
+            return $online->update(['user_id'=>$this->user_id]);
         } else {
             return OnlineM::create(['fd'=>$fd,'user_id'=>$this->user_id]);
         }
@@ -106,7 +106,7 @@ class StartSwoole extends Command
 
     private function delOnline()
     {
-        return OnlineM::where('user_id',$this->user_id)->update(['user_id'=>null]);
+        return OnlineM::where('user_id',$this->user_id)->delete();
     }
 
 
@@ -139,7 +139,7 @@ class StartSwoole extends Command
 
     private function insertMessage($message,$status=1)
     {
-       return MessageM::create(['content'=>$message,'order_id'=>$this->order_id,'from_id'=>$this->user_id,'to_id'=>$this->to_id,'status'=>$status]);
+        return MessageM::create(['content'=>$message,'order_id'=>$this->order_id,'from_id'=>$this->user_id,'to_id'=>$this->to_id,'status'=>$status]);
     }
 
     private function updateMessage($messages,$status=1)
