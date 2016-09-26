@@ -40,9 +40,12 @@ class Controller extends BaseController
     {
         $token = $request->header('token');
         if ($token) {
-            $user_id = LoginTokenM::where('token',$token)->pluck('user_id');
-            if ($user_id)
+            $user_id = LoginTokenM::where('token',$token)->first()['user_id'];
+            if ($user_id) {
                 return UserM::find($user_id);
+            } else {
+                exit(response()->json(['success' => 'N','msg' => 'token已失效从新登录']));
+            }
         } else {
             exit(response()->json(['success' => 'N','msg' => '请先登录']));
         }

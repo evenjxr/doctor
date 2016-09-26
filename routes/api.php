@@ -78,6 +78,13 @@ Route::group(['prefix' => 'hospital'], function () {
 
 });
 
+Route::group(['prefix' => 'message'], function () {
+
+    Route::get('lists',['uses' => 'Api\Message@lists']);
+
+    Route::get('detail',['uses' => 'Api\Message@detail']);
+});
+
 Route::group(['prefix' => 'wallet'], function () {
 
     Route::get('amount',['uses' => 'Api\Wallet@amount']);
