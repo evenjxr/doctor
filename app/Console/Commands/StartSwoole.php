@@ -53,7 +53,7 @@ class StartSwoole extends Command
             $message = MessageM::where('order_id',$this->order_id)
                 ->where('status','1')
                 ->where('to_id',$this->user_id)
-                ->get(['id','content','created_at'])->toArray();
+                ->get(['id','content','created_at','type'])->toArray();
             $res = $this->sendMessage($server,$message,1);
             if ($res == 1){
                 $this->updateMessage($message,2);
@@ -64,11 +64,12 @@ class StartSwoole extends Command
 
 
         $server->on('message', function ($server, $frame)  {
-            $res = $this->sendMessage($server,$frame->data);
+            $data = $this->keyword($frame->data);
+            $res = $this->sendMessage($server,$data);
             if ($res == 1){
-                $this->insertMessage($frame->data,2);
+                $this->insertMessage($data,2);
             } else if($res == 0) {
-                $this->insertMessage($frame->data,1);
+                $this->insertMessage($data,1);
             }
         });
 
@@ -77,6 +78,18 @@ class StartSwoole extends Command
             $this->delOnline();
         });
         $server->start();
+    }
+
+
+    private function keyword($message)
+    {
+        //exchange_mobile exchange_wechat_rwm send_img message
+        $arr = explode('-##-',$message);
+        $newMessage=[];
+        $newMessage['type'] = $arr[0];
+        $newMessage['content'] = $arr[1];
+        $newMessage['created_at'] = date('Y-m-d H:i:s');
+        return [$newMessage];
     }
 
 
@@ -125,8 +138,6 @@ class StartSwoole extends Command
             for ($i=0;$i<$times;$i++) {
                 if(is_array($message)  && count($message)>0) {
                     $flag = $server->push($online->fd,json_encode($message));
-                } else if($message) {
-                    $flag = $server->push($online->fd,json_encode(['content'=>$message,'created_at'=>date('Y-m-d H:i:s')]));
                 }
                 if($flag ==1 ) break;
             }
@@ -142,7 +153,14 @@ class StartSwoole extends Command
 
     private function insertMessage($message,$status=1)
     {
-        return MessageM::create(['content'=>$message,'order_id'=>$this->order_id,'from_id'=>$this->user_id,'to_id'=>$this->to_id,'status'=>$status]);
+        foreach ($message as $key=>$value){
+            $message[$key]['status'] = $status;
+            $message[$key]['order_id'] = $this->order_id;
+            $message[$key]['order_id'] = $this->order_id;
+            $message[$key]['from_id'] = $this->user_id;
+            $message[$key]['to_id'] = $this->to_id;
+        }
+        return MessageM::insert($message);
     }
 
     private function updateMessage($messages,$status=1)
