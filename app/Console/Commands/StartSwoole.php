@@ -93,6 +93,7 @@ class StartSwoole extends Command
     {
         //exchange_mobile exchange_wechat_rwm send_img message  send_sound
         $arr = explode('-##-',$message);
+        $arr[1] = str_replace('undefined','',$arr[1]);
         $newMessage=[];
         $newMessage['type'] = $arr[0];
         $newMessage['content'] = $arr[1];
