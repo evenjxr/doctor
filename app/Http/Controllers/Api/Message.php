@@ -34,7 +34,7 @@ class Message extends Controller
             }
             if ($value->type == 'person') {
                 $one = UserM::find($users[$key]['with_user_id']);
-                $users[$key]['with_user_name'] = $one->truename;
+                $users[$key]['with_user_name'] = $one->name;
                 $users[$key]['with_user_headimgurl'] = $one->headimgurl;
             } else {
                 $users[$key]['with_user_name'] = '客服';
