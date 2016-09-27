@@ -52,4 +52,9 @@ class Wechat extends Controller
         return response()->json(['success' => 'Y', 'msg' => '', 'data' =>$this->weObj->getJsSign($url)]);
     }
 
+    public function getMedia()
+    {
+        $this->weObj->getMedia('tx0nyTMSW2tGDo_dBdp6j_aH2ECm0Iu2GkAXWZyH068FiWXk6AQXnjdbCa9NbSa4');
+    }
+
 }

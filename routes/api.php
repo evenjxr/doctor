@@ -27,7 +27,9 @@ Route::group(['prefix' => 'wechat'], function () {
 
     Route::get('userauth',['uses' => 'Api\Wechat@userAuth']);
 
-    Route::get('addorfinduser',['uses' => 'Api\Wechat@addOrFindUser','as' => 'find.add.user']);
+    Route::get('addorfinduser',['uses' => 'Api\Wechat@addOrFindUser']);
+
+    Route::get('getmedia',['uses' => 'Api\Wechat@getMedia']);
 
 });
 

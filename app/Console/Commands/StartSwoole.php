@@ -54,6 +54,13 @@ class StartSwoole extends Command
                 ->where('status','1')
                 ->where('to_id',$this->user_id)
                 ->get(['id','content','created_at','type'])->toArray();
+            foreach ($message as $key=>$value) {
+                if (strtotime($value['created_at'])+3*24*3600 > time()) {
+                    $message[$key]['expired'] = false;
+                } else {
+                    $message[$key]['expired'] = true;
+                }
+            }
             $res = $this->sendMessage($server,$message,1);
             if ($res == 1){
                 $this->updateMessage($message,2);
@@ -74,7 +81,8 @@ class StartSwoole extends Command
         });
 
         $server->on('close', function ($server, $fd) {
-            $this->sendMessage($server,'好友已下线');
+            $data = $this->keyword('-##-好友已下线');
+            $this->sendMessage($server,$data);
             $this->delOnline();
         });
         $server->start();
@@ -83,12 +91,13 @@ class StartSwoole extends Command
 
     private function keyword($message)
     {
-        //exchange_mobile exchange_wechat_rwm send_img message
+        //exchange_mobile exchange_wechat_rwm send_img message  send_sound
         $arr = explode('-##-',$message);
         $newMessage=[];
         $newMessage['type'] = $arr[0];
         $newMessage['content'] = $arr[1];
         $newMessage['created_at'] = date('Y-m-d H:i:s');
+        $newMessage['expired'] = false;
         return [$newMessage];
     }
 

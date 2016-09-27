@@ -14,6 +14,9 @@ use App\Http\Models\Tag as TagM;
 use App\Http\Models\Manager as ManagerM;
 use App\Http\Models\File as FileM;
 use App\Http\Models\Hospital as HospitalM;
+use App\Http\Models\Constant as ConstantM;
+
+
 
 
 
@@ -107,7 +110,7 @@ class Order extends Controller
             //     }
             // }
             ScoreM::add($user->id,'sendOrder');
-            return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => '']); 
+            return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => ['order'=>$order,'score'=>Constant::ConstantM('sendOrder')]]);
         } else {
             return response()->json(['success' => 'N', 'msg' => '转诊失败', 'data' =>'']);
         }
