@@ -12,6 +12,9 @@ use App\Http\Models\Message as MessageM;
 use App\Http\Models\Order as OrderM;
 use App\Http\Models\User as UserM;
 use App\Http\Models\File as FileM;
+use App\Http\Models\Like as LikeM;
+use App\Http\Models\Flower as FlowerM;
+use App\Http\Models\Follow as FollowM;
 
 
 
@@ -21,6 +24,7 @@ class Message extends Controller
     {
         $users = [];
         $user = $this->getUser($request);
+
         $orders = OrderM::where('from_id',$user->id)->orWhere('to_id',$user->id)->get(['id','type','from_id','to_id']);
         foreach ($orders as $key=>$value) {
             if ($value->from_id == $user->id) {
@@ -51,6 +55,7 @@ class Message extends Controller
     public function detail(Request $request)
     {
         $user = $this->getUser($request);
+        
         $param = Input::all();
         $order = OrderM::find($param['order_id']);
 
@@ -61,6 +66,9 @@ class Message extends Controller
         }
         $order->with_user_name = $one->name;
         $order->with_user_headimgurl = $one->headimgurl;
+        $order->with_user_follows = FollowM::where('user_id',$user->id)->count('id');
+        $order->with_user_flowers = FlowerM::where('user_id',$user->id)->count('id');
+        $order->with_user_likes = LikeM::where('user_id',$user->id)->count('id');
 
         $order->files = FileM::where('order_id',$param['order_id'])->orderBy('created_at','desc')->limit(6)->get(['key','name']);
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $order]);
