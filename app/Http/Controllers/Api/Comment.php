@@ -19,7 +19,9 @@ class Comment extends Controller
         $this->validateAdd($request);
         $params = Input::all();
         $params['user_id'] = $user->id;
-        $params['files'] = serialize($params['files']);
+        if(isset($params['files'])) {
+            $params['files'] = serialize($params['files']);
+        }
         $comment = CommentM::firstOrCreate($params);
         if($comment){
             return response()->json(['success' => 'Y', 'msg' => '提交成功', 'data' => '']);
