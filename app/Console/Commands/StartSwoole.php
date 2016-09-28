@@ -169,6 +169,7 @@ class StartSwoole extends Command
             $message[$key]['order_id'] = $this->order_id;
             $message[$key]['from_id'] = $this->user_id;
             $message[$key]['to_id'] = $this->to_id;
+            unset($message[$key]['expired']);
         }
         return MessageM::insert($message);
     }

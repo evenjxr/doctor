@@ -115,10 +115,10 @@ class User extends Controller
         $this->validateUpdate($request);
         $user = $this->getUser($request);
         $params = Input::all();
-        if(is_array($params['tag_hospital'])){
+        if(isset($params['tag_hospital'])&&is_array($params['tag_hospital'])){
             $params['tag_hospital'] = serialize($params['tag_hospital']);
         }
-        if(is_array($params['tag_subject'])){
+        if(isset($params['tag_subject'])&&is_array($params['tag_subject'])){
             $params['tag_subject'] = serialize($params['tag_subject']);
         }
         if ($user->update($params)) {
@@ -131,18 +131,18 @@ class User extends Controller
     private function validateUpdate($request)
     {
         $this->validate($request, [
-            'name' => 'required|between:2,10',
+            'name' => 'between:2,10',
 //            'headimgurl'=> 'required',
 //            'sign' => 'required',
-            'tag_hospital' => 'required',
-            'tag_subject' => 'required',
+            // 'tag_hospital' => 'required',
+            // 'tag_subject' => 'required',
         ], [
-            'name.required' => '姓名不得为空',
+            // 'name.required' => '姓名不得为空',
             'name.between' => '姓名在2到10之间',
 //            'sign.required' => '签名不得为空',
 //            'headimgurl.required' => '请上传头像',
-            'tag_hospital.required' => '医院标签不得为空',
-            'tag_subject.required' => '科目不得为空',
+            // 'tag_hospital.required' => '医院标签不得为空',
+            // 'tag_subject.required' => '科目不得为空',
         ]);
     }
 }

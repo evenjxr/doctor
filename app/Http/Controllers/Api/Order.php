@@ -110,7 +110,8 @@ class Order extends Controller
             //     }
             // }
             ScoreM::add($user->id,'sendOrder');
-            return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => ['order'=>$order,'score'=>Constant::ConstantM('sendOrder')]]);
+            // return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => ['order'=>$order,'score'=>Constant::ConstantM('sendOrder')]]);
+            return response()->json(['success' => 'Y', 'msg' => '转诊成功', 'data' => ['order'=>$order,'score'=>'200']]);
         } else {
             return response()->json(['success' => 'N', 'msg' => '转诊失败', 'data' =>'']);
         }
