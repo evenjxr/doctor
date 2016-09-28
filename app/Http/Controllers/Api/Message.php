@@ -61,8 +61,16 @@ class Message extends Controller
 
         if ($order->from_id == $user->id) {
             $one = UserM::find($order->to_id);
+            $order->from_name = $user->name;
+            $order->from_mobile = $user->mobile;
+            $order->to_name = $one->name;
+            $order->to_mobile = $one->mobile;
         } else {
             $one = UserM::find($order->from_id);
+            $order->from_name = $one->name;
+            $order->from_mobile = $one->mobile;
+            $order->to_name = $user->name;
+            $order->to_mobile = $user->mobile;
         }
         $order->my_name = $user->name;
         $order->my_headimgurl = $user->headimgurl;

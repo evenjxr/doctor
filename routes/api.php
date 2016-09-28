@@ -54,6 +54,16 @@ Route::group(['prefix' => 'tag'], function () {
 
 });
 
+Route::group(['prefix' => 'comment'], function () {
+
+    Route::get('lists',['uses' => 'Api\Comment@lists']);
+
+    Route::post('add',['uses' => 'Api\Comment@add']);
+
+    Route::post('delete',['uses' => 'Api\Comment@delete']);
+
+});
+
 Route::group(['prefix' => 'user'], function () {
 
     Route::get('index',['uses' => 'Api\User@index']);

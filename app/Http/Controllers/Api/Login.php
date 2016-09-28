@@ -41,7 +41,7 @@ class Login extends Controller
                 $this->insertInvite($user,$param['inviteCode']);
             }
             $user->update(['mobile'=>$param['mobile'],'invite_code'=>$this->makeInviteCode()]);
-        } else if($user->mobile != $param['mobile']) {
+        } else if( $user->mobile != $param['mobile']) {
             return response()->json(['success' => 'N', 'msg' => '绑定手机号不一致']);
         }
         $token = LoginTokenM::makeToken();
