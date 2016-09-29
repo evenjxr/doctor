@@ -11,12 +11,40 @@ use DB;
 use App\Http\Models\Hospital as HospitalM;
 use App\Http\Models\Follow as FollowM;
 use App\Http\Models\Order as OrderM;
+use App\Http\Models\Like as LikeM;
+use App\Http\Models\Flower as FlowerM;
 
 
 
 
 class Hospital extends Controller
 {
+    public function index(Request $request)
+    {
+        $id = Input::get('id');
+        $hospital = HospitalM::find($id);
+        if ($hospital) {
+            $follows = FollowM::where('type','hospital')->where('user_id',$id)->count('id');
+            $flowers = FlowerM::where('type','hospital')->where('user_id',$id)->count('id');
+            $likes = LikeM::where('type','hospital')->where('user_id',$id)->count('id');
+            $data = [
+                'follow_total' => $follows,
+                'flower_total' => $flowers,
+                'like_total' => $likes,
+                'name' => $hospital->name,
+                'photo' => $hospital->photo
+            ];
+        } else {
+            $data = [
+                'follow_total' => 0,
+                'flower_total' => 0,
+                'like_total' => 0,
+                'name' => '用户不存在或注销',
+                'photo' => ''
+            ];
+        }
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
+    }
     
     public function lists()
     {

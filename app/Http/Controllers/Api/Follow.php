@@ -54,6 +54,27 @@ class Follow extends Controller
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $follows['data']]);
     }
 
+    public function search(Request $request)
+    {
+        $user = $this->getUser($request);
+        $keyword = Input::get('keyword');
+        $myFollow = FollowM::where('by_user_id',$user->id)->get(['user_id','type']);
+        $user_ids = [];
+        $hospital_ids = [];
+        foreach ($myFollow as $key =>$value) {
+            if ($value->type == 'person') {
+                array_push($user_ids,$value->user_id);
+            } else {
+                array_push($hospital_ids,$value->user_id);
+            }
+        }
+        $users = UserM::where('name','like','%'.$keyword.'%')->whereIn('id',$user_ids)->get(['id','name','headimgurl','tag_subject']);
+        $hospitals = HospitalM::where('name','like','%'.$keyword.'%')->whereIn('id',$hospital_ids)->get(['id','name','photo']);
+        foreach ($users as $key=>$value) {
+            $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
+        }
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['user'=>$users,'hospitals'=>$hospitals]]);
+    }
 
     public function index(Request $request)
     {

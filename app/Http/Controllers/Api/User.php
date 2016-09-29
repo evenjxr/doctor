@@ -14,6 +14,7 @@ use App\Http\Models\Flower as FlowerM;
 use App\Http\Models\Follow as FollowM;
 use App\Http\Models\User as UserM;
 use App\Http\Models\Order as OrderM;
+use App\Http\Models\Hospital as HospitalM;
 
 
 
@@ -23,9 +24,13 @@ class User extends Controller
     public function index(Request $request)
     {
         $user = $this->getUser($request);
-        $follows = FollowM::where('user_id',$user->id)->count('id');
-        $flowers = FlowerM::where('user_id',$user->id)->count('id');
-        $likes = LikeM::where('user_id',$user->id)->count('id');
+        $id = Input::get('id');
+        if (isset($id)) {
+            $user = UserM::find($id);
+        }
+        $follows = FollowM::where('type','person')->where('user_id',$user->id)->count('id');
+        $flowers = FlowerM::where('type','person')->where('user_id',$user->id)->count('id');
+        $likes = LikeM::where('type','person')->where('user_id',$user->id)->count('id');
         $data = [
             'follow_total' => $follows,
             'flower_total' => $flowers,
@@ -35,6 +40,18 @@ class User extends Controller
             'headimgurl' => $user->headimgurl
         ];
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = Input::get('keyword');
+        $users = UserM::where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
+        foreach ($users as $key =>$value) {
+            $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
+
+        }
+        $hospitals = HospitalM::where('name','like','%'.$keyword.'%')->get(['id','name','photo']);
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['user'=>$users,'hospitals'=>$hospitals]]);
     }
 
 

@@ -78,9 +78,13 @@ Route::group(['prefix' => 'user'], function () {
 
     Route::get('orderlists',['uses' => 'Api\User@orderList']);
 
+    Route::get('search',['uses' => 'Api\User@search']);
+
 });
 
 Route::group(['prefix' => 'hospital'], function () {
+
+    Route::get('index',['uses' => 'Api\Hospital@index']);
 
     Route::get('lists',['uses' => 'Api\Hospital@lists']);
 
@@ -146,6 +150,8 @@ Route::group(['prefix' => 'flower'], function () {
 Route::group(['prefix' => 'follow'], function () {
 
     Route::get('index',['uses' => 'Api\Follow@index']);
+
+    Route::get('search',['uses' => 'Api\Follow@search']);
 
     Route::post('add',['uses' => 'Api\Follow@add']);
 
