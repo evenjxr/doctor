@@ -32,7 +32,8 @@ class Hospital extends Controller
                 'flower_total' => $flowers,
                 'like_total' => $likes,
                 'name' => $hospital->name,
-                'photo' => $hospital->photo
+                'photo' => $hospital->photo,
+                'description' => $hospital->description
             ];
         } else {
             $data = [
@@ -40,7 +41,8 @@ class Hospital extends Controller
                 'flower_total' => 0,
                 'like_total' => 0,
                 'name' => '用户不存在或注销',
-                'photo' => ''
+                'photo' => '',
+                'description' => ''
             ];
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);

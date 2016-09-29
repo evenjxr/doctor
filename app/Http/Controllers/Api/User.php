@@ -37,7 +37,8 @@ class User extends Controller
             'like_total' => $likes,
             'name' => $user->name,
             'sign' => $user->sign,
-            'headimgurl' => $user->headimgurl
+            'headimgurl' => $user->headimgurl,
+            'introduction' => $user->introduction
         ];
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
     }
