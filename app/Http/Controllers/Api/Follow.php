@@ -38,8 +38,11 @@ class Follow extends Controller
         $hospital = new HospitalM();
         foreach ($follows['data'] as $key => $value) {
             if ($value['type'] == 'person') {
+                $one =$user->find($value['user_id']);
                 $follows['data'][$key]['type_name'] = '个人';
-                $follows['data'][$key]['user_name'] = $user->find($value['user_id'])['name'];
+                $follows['data'][$key]['user_name'] = $one->name;
+                $one->tag_hosptal ? $follows['data'][$key]['tag_hospital'] = TagM::find(unserialize($one->tag_hosptal)[0])['name'] : '';
+                $one->tag_subject ? $follows['data'][$key]['tag_subject'] = TagM::find(unserialize($one->tag_subject)[0])['name'] : '';
             } else if ($value['type'] == 'hospital') {
                 $follows['data'][$key]['type_name'] = '医院';
                 $follows['data'][$key]['user_name'] = $hospital->find($value['user_id'])['name'];
