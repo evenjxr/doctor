@@ -45,11 +45,13 @@ class User extends Controller
 
     public function search(Request $request)
     {
+        $this->validateSearch($request);
+        $user = $this->getUser($request);
         $keyword = Input::get('keyword');
-        $users = UserM::where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
+        SearchHistory::add($user,$keyword);
+        $users = UserM::where('status',1)->where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
         foreach ($users as $key =>$value) {
             $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
-
         }
         $hospitals = HospitalM::where('name','like','%'.$keyword.'%')->get(['id','name','photo']);
         return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['user'=>$users,'hospitals'=>$hospitals]]);
@@ -163,4 +165,15 @@ class User extends Controller
             // 'tag_subject.required' => '科目不得为空',
         ]);
     }
+
+    private function validateSearch($request)
+    {
+        $this->validate($request, [
+            'keyword' => 'required|between:1,4',
+        ], [
+            'keyword.required' => '搜索不得为空',
+            'keyword.between' => '关键词在2到4个字之间',
+        ]);
+    }
+    
 }

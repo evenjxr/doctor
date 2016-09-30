@@ -94,6 +94,12 @@ Route::group(['prefix' => 'hospital'], function () {
 
 });
 
+Route::group(['prefix' => 'searchhistory'], function () {
+
+    Route::get('lists',['uses' => 'Api\SearchHistory@lists']);
+
+});
+
 Route::group(['prefix' => 'message'], function () {
 
     Route::get('lists',['uses' => 'Api\Message@lists']);
