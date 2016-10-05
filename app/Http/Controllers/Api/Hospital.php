@@ -84,7 +84,7 @@ class Hospital extends Controller
             $one = $hospital->find($value);
             $contactHospital[$key]['hospital_id'] = $value;
             $contactHospital[$key]['hospital_name'] = $one->name;
-            $contactHospital[$key]['photo'] = $one->headimgurl;
+            $contactHospital[$key]['photo'] = 'http://oss-cn-beijing.aliyuncs.com/feidaoimg/'.$one->photo;
             $contactHospital[$key]['description'] = $one->description;
         }
 
@@ -92,7 +92,7 @@ class Hospital extends Controller
             $one = $hospital->find($value->user_id);
             $hotFollow[$key]['hospital_id'] = $value->user_id;
             $hotFollow[$key]['hospital_name'] = $one->name;
-            $hotFollow[$key]['photo'] = $one->photo;
+            $hotFollow[$key]['photo'] = 'http://oss-cn-beijing.aliyuncs.com/feidaoimg/'.$one->photo;
             $hotFollow[$key]['description'] = $one->description;
 
         }
