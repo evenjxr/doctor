@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Input;
+use App\Http\Controllers\Api\Common;
+
+
 use App\Http\Models\Hospital as HospitalM;
 use App\Http\Models\Tag as TagM;
 
@@ -39,7 +42,8 @@ class Hospital extends Controller
         $params = Input::all();
         unset($params['file']);
         $flag = hospitalM::firstOrCreate($params);
-        if ($flag) return $this->detail($flag->id);
+        if ($flag)
+            return $this->detail($flag->id);
     }
 
     public function detail()

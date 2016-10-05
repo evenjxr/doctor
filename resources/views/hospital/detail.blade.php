@@ -83,8 +83,12 @@
                 <div class="formControls col-xs-8 col-sm-9">
                     <div class="uploader-thum-container">
                         <div id="fileList" class="uploader-list">
-                            <input name="photo" value="" type="hidden" id="photo">
-                            <img src="" id="img">
+                            <input type="hidden" name="photo" id="photo" value="{{$hospital->photo}}">
+                            @if ($hospital->photo)
+                                <img src="http://oss-cn-beijing.aliyuncs.com/feidaoimg/{{$hospital->photo}}"  id="img" style="width: 400px;height: 225px;margin: 10px 0;">
+                            @else
+                                <img src=""  id="img">
+                            @endif
                         </div>
                         <div id="filePicker">选择图片</div>
                         <button id="btn-star" class="btn btn-default btn-uploadstar radius ml-10">开始上传</button>
@@ -210,7 +214,7 @@
 
             // 文件上传成功，给item添加成功class, 用样式标记上传成功。
             uploader.on( 'uploadSuccess', function( file ,response ) {
-                $('#thumbnail').val(response._raw);
+                $('#photo').val(JSON.parse(response._raw)[0]);
                 $( '#'+file.id ).addClass('upload-state-success').find(".state").text("已上传");
             });
 
