@@ -53,20 +53,25 @@ class StartSwoole extends Command
             $message = MessageM::where('order_id',$this->order_id)
                 ->where('status','1')
                 ->where('to_id',$this->user_id)
-                ->get(['id','content','created_at','type'])->toArray();
-            foreach ($message as $key=>$value) {
-                if (strtotime($value['created_at'])+3*24*3600 > time()) {
-                    $message[$key]['expired'] = false;
-                } else {
-                    $message[$key]['expired'] = true;
+                ->get(['id','content','created_at','type']);
+            if (count($message)>0) {
+                $message = $message->toArray();
+                foreach ($message as $key=>$value) {
+                    if (strtotime($value['created_at'])+3*24*3600 > time()) {
+                        $message[$key]['expired'] = false;
+                    } else {
+                        $message[$key]['expired'] = true;
+                    }
                 }
-            }
-            $res = $this->sendMessage($server,$message,1);
-            if ($res == 1){
-                $this->updateMessage($message,2);
-            } else if($res == 0) {
-                $this->updateMessage($message,1);
-            }
+                $res = $this->sendMessage($server,$message,1);
+                if ($res == 1){
+                    $this->updateMessage($message,2);
+                } else if($res == 0) {
+                    $this->updateMessage($message,1);
+                }
+                die;
+            }    
+
         });
 
 

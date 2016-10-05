@@ -33,17 +33,25 @@ class Flower extends Controller
     public function lists(Request $request)
     {
         $user = $this->getUser($request);
-        $flowers = FlowerM::where('by_user_id',$user->id)->simplePaginate(20)->toArray();
-        $user = new UserM();
+        $flowers = FlowerM::where('by_user_id',$user->id)->orWhere('user_id',$user->id)->simplePaginate(20)->toArray();
+        $users = new UserM();
         $hospital = new HospitalM();
         foreach ($flowers['data'] as $key => $value) {
+            if ($user->id == $value['user_id']) {
+                $flowers['data'][$key]['flag'] = '收到花朵';
+            } elseif($user->id == $value['by_user_id']) {
+                $flowers['data'][$key]['flag'] = '送出花朵';
+            }
             if ($value['type'] == 'person') {
                 $flowers['data'][$key]['type_name'] = '个人';
-                $flowers['data'][$key]['user_name'] = $user->find($value['user_id'])['name'];
+                $flowers['data'][$key]['user_name'] = $users->find($value['user_id'])['name'];
             } else if ($value['type'] == 'hospital') {
                 $flowers['data'][$key]['type_name'] = '医院';
                 $flowers['data'][$key]['user_name'] = $hospital->find($value['user_id'])['name'];
             }
+            $date = strtotime($value['created_at']);
+            $flowers['data'][$key]['add_time'] = date('m',$date).'月'.date('d',$date).'日';
+
         }
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $flowers['data']]);
     }
