@@ -134,7 +134,7 @@ class Order extends Controller
             'patient_name.required' => '患者名称不得为空',
             'patient_mobile.required' => '患者电话不得为空',
             'description.required' => '描述不得为空',
-            'video_url.required' => '录音地址不得卫康',
+            'video_url.required' => '录音不得为空',
         ]);
     }
 }

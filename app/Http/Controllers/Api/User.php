@@ -24,7 +24,7 @@ class User extends Controller
     public function index(Request $request)
     {
         $user = $this->getUser($request);
-        $id = Input::get('id');
+        $id = Input::get('user_id');
         if (isset($id)) {
             $user = UserM::find($id);
         }

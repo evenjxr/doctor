@@ -121,9 +121,9 @@ class StartSwoole extends Command
     {
         $online = OnlineM::where('fd',$fd)->first();
         $userOnline = OnlineM::where('user_id',$this->user_id)->first();
-        if($online && count($userOnline)==0){
+        if($online && !$userOnline){
             return $online->update(['user_id'=>$this->user_id]);
-        } else if(count($userOnline)>0) {
+        } else if(!$online  && $userOnline) {
             return $userOnline->update(['fd'=>$fd]);
         } else {
             return OnlineM::create(['fd'=>$fd,'user_id'=>$this->user_id]);
@@ -132,7 +132,7 @@ class StartSwoole extends Command
 
     private function delOnline()
     {
-        return OnlineM::where('user_id',$this->user_id)->delete();
+        return OnlineM::where('user_id',$this->user_id)->update(['user_id'=>'']);
     }
 
 
