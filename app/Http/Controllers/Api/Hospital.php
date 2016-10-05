@@ -104,6 +104,7 @@ class Hospital extends Controller
     {
         $id = Input::get('id');
         $one = HospitalM::find($id);
+        $one->photo = 'http://oss-cn-beijing.aliyuncs.com/feidaoimg/'.$one->photo;
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $one]);
     }
 }
