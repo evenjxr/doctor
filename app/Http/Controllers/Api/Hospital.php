@@ -21,6 +21,7 @@ class Hospital extends Controller
 {
     public function index(Request $request)
     {
+        $user = $this->getUser($request);
         $id = Input::get('id');
         $hospital = HospitalM::find($id);
         if ($hospital) {
@@ -32,7 +33,7 @@ class Hospital extends Controller
                 'flower_total' => $flowers,
                 'like_total' => $likes,
                 'name' => $hospital->name,
-                'photo' => $hospital->photo,
+                'photo' => 'http://oss-cn-beijing.aliyuncs.com/feidaoimg/'.$hospital->photo,
                 'description' => $hospital->description
             ];
         } else {
@@ -45,6 +46,10 @@ class Hospital extends Controller
                 'description' => ''
             ];
         }
+        $liked = LikeM::where(['user_id'=>$id,'by_user_id'=>$user->id])->first();
+        $followed = FollowM::where(['user_id'=>$id,'by_user_id'=>$user->id])->first();
+        $data['liked'] = $liked ? true : false;
+        $data['followed'] = $followed ? true : false;
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
     }
     

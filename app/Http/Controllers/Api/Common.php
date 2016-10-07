@@ -8,6 +8,7 @@ use Validator;
 use Input;
 use App\Http\Services\OSS;
 use App\Http\Services\Wechat;
+use App\Http\Extra\WechatPayment;
 
 
 use  App\Http\Models\File as FileM;
@@ -17,6 +18,18 @@ use  App\Http\Models\File as FileM;
 class Common extends Controller
 {
     public $wechat;
+
+    static public function payment(Request $request)
+    {
+        $config = array(
+            'appid'  => 'wxb31afbe7f7f9318e',
+            'mch_id' => '1323980401',
+            'secret'  => '3bf1558f07c9c147427865a79adbbe66',
+            'key'    => 'bb7ef1d11e7c7179b0c32bcf6d474ab8',
+        );
+        $payment = new WechatPayment($config);
+        return $payment;
+    }
     
     public function uploadFiles()
     {

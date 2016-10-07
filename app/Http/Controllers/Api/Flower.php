@@ -17,7 +17,6 @@ class Flower extends Controller
 {
     public function add(Request $request)
     {
-        $this->validateAdd($request);
         $user = $this->getUser($request);
         $params = Input::all();
         $params['fee'] = 200;
@@ -29,6 +28,17 @@ class Flower extends Controller
         }
     }
 
+    public function payment(Request $request)
+    {
+//        $payment = Common::payment();
+//        $prepay_id = $payment->get_prepay_id(
+//            '一斤大白菜',       // 商品描述
+//            strval(time()),      // 商户订单号
+//            '1',                // 总金额(单位：分)
+//            'http://wxpay.youyu365.com/wechatest/index.php' // 通知地址
+//        );
+//        $package = json_encode($payment->get_package($prepay_id));
+    }
 
     public function lists(Request $request)
     {

@@ -24,6 +24,7 @@ class User extends Controller
     public function index(Request $request)
     {
         $user = $this->getUser($request);
+        $my = $user;
         $id = Input::get('user_id');
         if (isset($id)) {
             $user = UserM::find($id);
@@ -40,6 +41,10 @@ class User extends Controller
             'headimgurl' => $user->headimgurl,
             'introduction' => $user->introduction
         ];
+        $liked = LikeM::where(['user_id'=>$id,'by_user_id'=>$my->id])->first();
+        $followed = FollowM::where(['user_id'=>$id,'by_user_id'=>$my->id])->first();
+        $data['liked'] = $liked ? true : false;
+        $data['followed'] = $followed ? true : false;
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $data]);
     }
 

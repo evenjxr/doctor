@@ -81,6 +81,12 @@ class Message extends Controller
         $order->with_user_flowers = FlowerM::where('user_id',$user->id)->count('id');
         $order->with_user_likes = LikeM::where('user_id',$user->id)->count('id');
 
+
+        $liked = LikeM::where(['user_id'=>$one->id,'by_user_id'=>$user->id])->first();
+        $followed = FollowM::where(['user_id'=>$one->id,'by_user_id'=>$user->id])->first();
+        $order->liked = $liked ? true : false;
+        $order->followed = $followed ? true : false;
+
         $order->files = FileM::where('order_id',$param['order_id'])->orderBy('created_at','desc')->limit(6)->get(['key','name']);
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $order]);
     }
