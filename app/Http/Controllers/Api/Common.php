@@ -57,9 +57,9 @@ class Common extends Controller
     {
        $options = array(
             'token'=>'weixin',
-            'encodingaeskey'=>'cQ9gbUiSBRK2VuPnyMDi61i4oDXn29QTe4xpo1MTFhb',
-            'appid'=>'wx2a0cd2e2bb3c55b4',
-            'appsecret'=>'3b2928f2d55ecbe95a01dc3dc5d75b67'
+            'encodingaeskey'=>'yAtWUF5rjulfGm3P5VG7jvlIhvKdN1BBxH4TR9W1cNY',
+            'appid'=>'wxcf26b0d3a2d6c809',
+            'appsecret'=>'07d34e8181048b4b095da0bdd8ad50bc'
        );
         $weObj = new Wechat($options);
 
