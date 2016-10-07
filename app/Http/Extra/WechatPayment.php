@@ -39,8 +39,8 @@ class WechatPayment
     {
         $this->_config = $config;
         $this->openid = $openid;
-        $this->SSLCERT_PATH = './cert/apiclient_cert.pem';
-        $this->SSLKEY_PATH = './cert/apiclient_key.pem';
+        $this->SSLCERT_PATH = '/cert/apiclient_cert.pem';
+        $this->SSLKEY_PATH = '/cert/apiclient_key.pem';
     }
 
 
@@ -154,6 +154,7 @@ class WechatPayment
         $data['trade_type']   = $trade_type;
         $data['openid']       = $this->openid;
         $result = $this->post(self::PREPAY_GATEWAY, $data);
+        dd($result);
         if ($result['return_code'] == 'SUCCESS') {
             return $result['prepay_id'];
         } else {

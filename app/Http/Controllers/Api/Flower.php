@@ -43,6 +43,7 @@ class Flower extends Controller
             $amount*$price->amount,
             URL::Route('flower.payment.callback') // 通知地址
         );
+        dd($prepay_id);
         return response()->json(['success' => 'Y', 'msg' => '', 'data' => $payment->get_package($prepay_id)]);
     }
 

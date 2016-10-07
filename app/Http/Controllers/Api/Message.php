@@ -76,6 +76,7 @@ class Message extends Controller
         $order->my_headimgurl = $user->headimgurl;
         $order->with_user_id = $one->id;
         $order->with_user_name = $one->name;
+        $order->with_user_introduction = $one->introduction;
         $order->with_user_headimgurl = $one->headimgurl;
         $order->with_user_follows = FollowM::where('user_id',$user->id)->count('id');
         $order->with_user_flowers = FlowerM::where('user_id',$user->id)->count('id');

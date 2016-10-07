@@ -22,10 +22,10 @@ class Common extends Controller
     static public function payment($user)
     {
         $config = array(
-            'appid'  => 'wxb31afbe7f7f9318e',
-            'mch_id' => '1323980401',
-            'secret'  => '3bf1558f07c9c147427865a79adbbe66',
-            'key'    => 'bb7ef1d11e7c7179b0c32bcf6d474ab8',
+            'appid'  => 'wxcf26b0d3a2d6c809',
+            'mch_id' => '1391672302',
+            'secret'  => '247fac0e4d409dc0b79053f2f233bbb8',
+            'key'    => '07d34e8181048b4b095da0bdd8ad50bc',
         );
         $payment = new WechatPayment($config,$user->openid);
         return $payment;
