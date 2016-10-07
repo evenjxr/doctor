@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use Input;
+use Illuminate\Support\Facades\URL;
 
 use App\Http\Models\Flower as FlowerM;
 use App\Http\Models\User as UserM;
 use App\Http\Models\Hospital as HospitalM;
 use App\Http\Models\Garden as GardenM;
+use App\Http\Models\Constant as ConstantM;
 
 
 class Flower extends Controller
@@ -30,14 +32,19 @@ class Flower extends Controller
 
     public function payment(Request $request)
     {
-//        $payment = Common::payment();
-//        $prepay_id = $payment->get_prepay_id(
-//            '一斤大白菜',       // 商品描述
-//            strval(time()),      // 商户订单号
-//            '1',                // 总金额(单位：分)
-//            'http://wxpay.youyu365.com/wechatest/index.php' // 通知地址
-//        );
-//        $package = json_encode($payment->get_package($prepay_id));
+        $this->validatePayment($request);
+        $user = $this->getUser($request);
+        $amount = Input::get('amount');
+        $price = ConstantM::where(['type'=>'flower_price','table'=>'flowers'])->first();
+        $payment = Common::payment($user);
+        $prepay_id = $payment->get_prepay_id(
+            $amount.'朵鲜花',
+            strval(time()),
+            $amount*$price->amount,
+            URL::Route('flower.payment.callback') // 通知地址
+        );
+        dd($prepay_id);
+        return response()->json(['success' => 'Y', 'msg' => '', 'data' => $payment->get_package($prepay_id)]);
     }
 
     public function lists(Request $request)
@@ -76,6 +83,15 @@ class Flower extends Controller
             'user_id.required' => '用户id不得为空',
             'type.required' => 'type不得为空',
             'type.in' => 'type类型不对',
+            'amount.required' => '鲜花数量不得为空'
+        ]);
+    }
+
+    private function validatePayment($request)
+    {
+        $this->validate($request, [
+            'amount' => 'required'
+        ], [
             'amount.required' => '鲜花数量不得为空'
         ]);
     }

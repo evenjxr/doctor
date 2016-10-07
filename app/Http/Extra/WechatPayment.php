@@ -6,7 +6,7 @@
  * Time: 下午12:10
  */
 
-namespace App\Extra;
+namespace App\Http\Extra;
 
 
 class WechatPayment
@@ -35,10 +35,10 @@ class WechatPayment
     /**
      * @param $config 微信支付配置数组
      */
-    public function __construct($config,$flag=false)
+    public function __construct($config,$openid)
     {
         $this->_config = $config;
-        !$flag && $this->GetOpenid();
+        $this->openid = $openid;
         $this->SSLCERT_PATH = './cert/apiclient_cert.pem';
         $this->SSLKEY_PATH = './cert/apiclient_key.pem';
     }
@@ -386,14 +386,14 @@ class WechatPayment
     public function notify()
     {
         //获取通知的数据
-        $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $xml = file_get_contents('php://input');
         //如果返回成功则验证签名
         try {
             $result = $this->FromXml($xml);
-            // if($result['return_code'] != 'SUCCESS'){
-            //     return $result;
-            // }
-            // // $this->CheckSign($result);
+             if($result['return_code'] != 'SUCCESS'){
+                 return $result;
+             }
+             $this->CheckSign($result);
             return $result;
         } catch (WxPayException $e){
             $e->errorMessage();

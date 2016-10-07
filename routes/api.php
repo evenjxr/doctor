@@ -151,6 +151,9 @@ Route::group(['prefix' => 'flower'], function () {
 
     Route::get('lists',['uses' => 'Api\Flower@lists']);
 
+    Route::post('payment',['uses' => 'Api\Flower@payment']);
+
+    Route::post('paymentCallBack',['uses' => 'Api\Flower@payment','as' => 'flower.payment.callback']);
 });
 
 Route::group(['prefix' => 'follow'], function () {

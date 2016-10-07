@@ -19,7 +19,7 @@ class Common extends Controller
 {
     public $wechat;
 
-    static public function payment(Request $request)
+    static public function payment($user)
     {
         $config = array(
             'appid'  => 'wxb31afbe7f7f9318e',
@@ -27,7 +27,7 @@ class Common extends Controller
             'secret'  => '3bf1558f07c9c147427865a79adbbe66',
             'key'    => 'bb7ef1d11e7c7179b0c32bcf6d474ab8',
         );
-        $payment = new WechatPayment($config);
+        $payment = new WechatPayment($config,$user->openid);
         return $payment;
     }
     

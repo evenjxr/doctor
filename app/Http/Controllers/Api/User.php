@@ -53,13 +53,26 @@ class User extends Controller
         $this->validateSearch($request);
         $user = $this->getUser($request);
         $keyword = Input::get('keyword');
+        $type = Input::get('type');
+
         SearchHistory::add($user,$keyword);
-        $users = UserM::where('status',1)->where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
-        foreach ($users as $key =>$value) {
-            $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
+        if ($type == 'user') {
+            $users = UserM::where('status',1)->where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
+            foreach ($users as $key =>$value) {
+                $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
+            }
+            return response()->json(['success' => 'Y', 'msg' => '', 'data' =>$users]);
+        } elseif($type == 'hospital') {
+            $hospitals = HospitalM::where('status',2)->where('name','like','%'.$keyword.'%')->get(['id','name','photo']);
+            return response()->json(['success' => 'Y', 'msg' => '', 'data' =>$hospitals]);
+        } else {
+            $users = UserM::where('status',1)->where('name','like','%'.$keyword.'%')->get(['id','name','headimgurl','tag_subject']);
+            $hospitals = HospitalM::where('status',2)->where('name','like','%'.$keyword.'%')->get(['id','name','photo']);
+            foreach ($users as $key =>$value) {
+                $users[$key]['user_subject_tag'] = TagM::find(unserialize($value->tag_subject)[0])['name'];
+            }
+            return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['user'=>$users,'hospitals'=>$hospitals]]);
         }
-        $hospitals = HospitalM::where('name','like','%'.$keyword.'%')->get(['id','name','photo']);
-        return response()->json(['success' => 'Y', 'msg' => '', 'data' =>['user'=>$users,'hospitals'=>$hospitals]]);
     }
 
 
